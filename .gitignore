@@ -178,3 +178,4 @@ cython_debug/
 templates/
 transformation_results/
 statics/
+documentation/
