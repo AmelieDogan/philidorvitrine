@@ -4,6 +4,7 @@ from .projects_list import ProjectsListWidget
 from .presentation_editor import PresentationEditor
 from .legal_mentions_editor import LegalMentionsEditor
 from .about_editor import AboutEditor
+from .transformation import TransformationWidget
 
 class MainWindow(QMainWindow):
     def __init__(self, project_manager, save_projects_callback, presentation, save_presentation_callback, legal_mentions, save_legal_mentions_callback, about, save_about_callback):
@@ -31,12 +32,14 @@ class MainWindow(QMainWindow):
         self.legal_mentions_editor = LegalMentionsEditor(self.legal_mentions, self)
         self.about_editor = AboutEditor(self.about, self)
 
+        self.transformation_widget = TransformationWidget()
+
         self.tabs.addTab(self.create_tab("La future page d'accueil du logiciel"), "Accueil")
         self.tabs.addTab(self.presentation_editor, "Présentation")
         self.tabs.addTab(self.project_list_widget, "Projets")
         self.tabs.addTab(self.legal_mentions_editor, "Mentions légales")
         self.tabs.addTab(self.about_editor, "A propos")
-        self.tabs.addTab(self.create_tab("Onglet pour importer le panier et lancer la transformation"), "Transformation")
+        self.tabs.addTab(self.transformation_widget, "Transformation")
         self.tabs.addTab(self.create_tab("Onglet d'aide"), "Aide")
 
         self.presentation_editor.data_saved.connect(self._on_presentation_saved)

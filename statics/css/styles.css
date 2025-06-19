@@ -1,0 +1,646 @@
+/* Styles pour le Centre de Musique Baroque de Versailles - Edition numérique de PHILIDOR4
+ * Basé sur la charte graphique CMBV 2023
+ */
+
+/* Importation des polices (à remplacer par les versions réelles) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Note: Hermes et Dala Moa sont des polices personnalisées qui nécessiteraient d'être hébergées */
+@font-face {
+    font-family: Dala Moa;
+    src: url('../polices/Dala\ Moa/Dala\ Moa\ Bold.otf');
+    font-weight: bold;
+}
+@font-face {
+    font-family: Hermes;
+    src: url('../polices/Hermes/Hermes-Regular.otf');
+}
+/* En attendant, on utilise des alternatives */
+
+:root {
+    /* Couleurs principales */
+    --cmbv-black: #000000;
+    --cmbv-red: #FF5000;
+    --cmbv-pink: #FF82BE;
+    --cmbv-blue: #1E73E6;
+    --cmbv-green: #00E696;
+    /* Couleurs secondaires */
+    --cmbv-gold: #AA785A;
+    --cmbv-bright-pink: #FF506E;
+    --cmbv-purple: #6441FF;
+    --cmbv-cyan: #00DCD2;
+    --cmbv-yellow: #FFE600;
+    /* Couleurs fonctionnelles */
+    --cmbv-light-grey: #F5F5F5;
+    --cmbv-medium-grey: #E0E0E0;
+    --cmbv-dark-grey: #333333;
+    --cmbv-white: #FFFFFF;
+    /* Espacement */
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+}
+
+/* Styles généraux */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--cmbv-black);
+    background-color: var(--cmbv-white);
+    margin: 0 auto;
+    position: relative;
+}
+
+h1, h2, h3 {
+    font-family: 'Dala Moa';
+    font-weight: normal;
+    color: var(--cmbv-gold);
+}
+
+h1 {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+a {
+    color: var(--cmbv-dark-grey);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: 250ms ease-in-out;
+}
+
+a:hover{
+    color: var(--cmbv-red);
+    border-bottom: 2px solid var(--cmbv-red);
+}
+
+/* Header avec le rayon caractéristique */
+header {
+    position: relative;
+    padding: var(--spacing-lg);
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    background-color: var(--cmbv-white);
+    box-shadow: 0 0 50px -18px rgba(0, 0, 10, .1), 0 40px 50px -18px rgba(0, 0, 10, .32);
+}
+
+header .rayon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 60px;
+    background-color: var(--cmbv-red);
+    transform: rotate(-54.7deg) translateX(-50%);
+    transform-origin: 0 0;
+    z-index: 1;
+}
+
+.header-content {
+    height: 200px;
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+}
+
+.header-content h1 {
+    margin-bottom: 1rem;
+}
+
+.header-content h2 {
+    font-family: "Hermes";
+    font-size: 1.5rem;
+    font-weight: normal;
+}
+
+header .logo {
+    font-family: 'Arial Black', sans-serif; /* Substitut pour le logo */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--cmbv-black);
+    position: relative;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header .logo img {
+    height: 100%;
+}
+
+header nav {
+    margin-top: var(--spacing-md);
+}
+
+header nav a {
+    font-family: "Hermes";
+    font-size: 1.1rem;
+    padding: var(--spacing-md);
+    color: var(--cmbv-gold);
+    border-radius: 30px;
+    border: 3px solid var(--cmbv-gold);
+}
+
+header nav a:hover {
+    color: var(--cmbv-white);
+    background-color: var(--cmbv-gold);
+    border: 3px solid var(--cmbv-gold);
+}
+
+/* Main content */
+main {
+    padding: 0 var(--spacing-lg);
+}
+
+/* Index content */
+.index-content {
+    margin-bottom: var(--spacing-xl);
+}
+
+.project-list {
+    list-style-type: none;
+    margin: var(--spacing-lg) 0;
+}
+
+.project-list li {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--cmbv-medium-grey);
+}
+
+.work-count {
+    color: var(--cmbv-gold);
+    font-size: 0.9rem;
+    margin-left: var(--spacing-sm);
+}
+
+/* Project content */
+.project-content {
+    margin-bottom: var(--spacing-xl);
+}
+
+.genre-summary {
+    background-color: var(--cmbv-light-grey);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: 0 0 50px -18px rgba(0, 0, 10, .1), 0 40px 50px -18px rgba(0, 0, 10, .32);
+}
+
+.genre-links {
+    list-style-type: none;
+    margin-top: var(--spacing-md);
+    column-count: 2;
+}
+
+@media (max-width: 768px) {
+    .genre-links {
+        column-count: 1;
+    }
+}
+
+.genre-section {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--cmbv-medium-grey);
+}
+
+.genre-section h3 {
+    color: var(--cmbv-gold);
+    border-bottom: 2px solid var(--cmbv-gold);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.work-list {
+    list-style-type: none;
+    margin-left: var(--spacing-md);
+}
+
+.work-list li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.single-column {
+    column-count: 1;
+}
+
+/* Work details */
+.work-details {
+    background-color: var(--cmbv-light-grey);
+    box-shadow: 0 0 50px -18px rgba(0, 0, 10, .1), 0 40px 50px -18px rgba(0, 0, 10, .32);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.work-details h2 {
+    font-family: "Hermes";
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-lg);
+    position: relative;
+    display: inline-block;
+}
+
+.work-details h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--cmbv-red);
+}
+
+.metadata {
+    margin-top: var(--spacing-lg);
+}
+
+.metadata dt {
+    font-weight: bold;
+    margin-top: var(--spacing-md);
+    color: var(--cmbv-dark-grey);
+}
+
+.metadata dd {
+    margin-left: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px dotted var(--cmbv-medium-grey);
+}
+
+.work-text {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--cmbv-light-grey);
+    border-left: 4px solid var(--cmbv-gold);
+}
+
+/* Back to top link */
+.back-to-top {
+    text-align: right;
+    margin: var(--spacing-lg) 0;
+}
+
+.back-to-top a {
+    display: inline-block;
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--cmbv-gold);
+    border: 2px solid var(--cmbv-gold);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.back-to-top a:hover {
+    color: var(--cmbv-white);
+    background-color: var(--cmbv-gold);
+}
+
+/* Footer */
+footer {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--cmbv-medium-grey);
+    text-align: center;
+    border-top: 1px solid var(--cmbv-medium-grey);
+}
+
+footer p {
+    margin-bottom: var(--spacing-sm);
+}
+
+footer .smaller {
+    font-size: 0.8rem;
+    color: var(--cmbv-dark-grey);
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    header .logo {
+        margin-top: var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    main {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .header-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-content h2 {
+        font-size: 1rem;
+    }
+    
+    header .logo {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Améliorations responsive pour le Centre de Musique Baroque de Versailles - PHILIDOR4
+ * Basé sur la charte graphique CMBV 2023
+ * 
+ * Ces modifications viennent compléter votre CSS existant
+ */
+
+/* Media query pour les tablettes (992px et moins) */
+@media (max-width: 992px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--spacing-md);
+        height: auto;
+    }
+    
+    header .rayon {
+        height: 40px; /* Rayon plus petit sur tablette */
+    }
+    
+    .header-content {
+        height: auto;
+        width: 100%;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    header .logo {
+        height: 120px;
+        margin: var(--spacing-md) 0;
+        align-self: center;
+    }
+    
+    header nav {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    header nav a {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 1rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    .genre-links {
+        column-count: 2; /* Maintient 2 colonnes sur tablette */
+    }
+    
+    .work-details {
+        padding: var(--spacing-md);
+    }
+}
+
+/* Media query pour les smartphones (768px et moins) */
+@media (max-width: 768px) {
+    :root {
+        /* Réduction des espacements pour mobile */
+        --spacing-md: 0.75rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+    }
+    
+    body {
+        padding: 0;
+    }
+    
+    header {
+        padding: var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    header .rayon {
+        height: 30px; /* Rayon encore plus petit sur mobile */
+        transform: rotate(-45deg) translateX(-50%); /* Angle différent sur mobile */
+    }
+    
+    .header-content h1 {
+        font-size: 1.8rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .header-content h2 {
+        font-size: 1.2rem;
+    }
+    
+    header .logo {
+        height: 80px;
+    }
+    
+    header nav {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+    
+    header nav a {
+        display: block;
+        width: 80%;
+        text-align: center;
+        margin-bottom: var(--spacing-sm);
+        border-radius: 20px;
+    }
+    
+    main {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    h3 {
+        font-size: 1.3rem;
+    }
+    
+    .genre-links {
+        column-count: 1; /* Une seule colonne sur mobile */
+    }
+    
+    .work-list {
+        margin-left: 0;
+    }
+    
+    .work-details {
+        padding: var(--spacing-sm);
+    }
+    
+    .work-details h2::after {
+        width: 30px;
+    }
+    
+    .metadata dt {
+        margin-top: var(--spacing-sm);
+    }
+    
+    .metadata dd {
+        margin-left: var(--spacing-sm);
+    }
+    
+    .project-list li {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .back-to-top {
+        margin: var(--spacing-md) 0;
+    }
+    
+    footer {
+        padding: var(--spacing-md);
+        margin-top: var(--spacing-md);
+    }
+}
+
+/* Media query pour les petits smartphones (576px et moins) */
+@media (max-width: 576px) {
+    .header-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-content h2 {
+        font-size: 1rem;
+    }
+    
+    header .logo {
+        height: 60px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+    
+    h3 {
+        font-size: 1.1rem;
+    }
+    
+    .genre-summary {
+        padding: var(--spacing-sm);
+    }
+    
+    header nav a {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 0.9rem;
+    }
+    
+    /* Optimisation pour les tableaux de métadonnées sur petits écrans */
+    .metadata {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    
+    .metadata dt {
+        background-color: var(--cmbv-light-grey);
+        padding: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+        margin-bottom: 0;
+    }
+    
+    .metadata dd {
+        margin-left: 0;
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Améliorations générales de l'interface tactile pour mobiles */
+@media (hover: none) {
+    /* Optimisations pour écrans tactiles */
+    a, button, .back-to-top a, header nav a {
+        padding: var(--spacing-md); /* Cibles tactiles plus grandes */
+    }
+    
+    header nav a {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .work-list li, .project-list li {
+        padding: var(--spacing-sm) 0; /* Plus d'espace pour les touches */
+    }
+}
+
+/* Optimisation pour les orientations */
+@media (max-width: 992px) and (orientation: landscape) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header .logo {
+        margin: 0;
+        height: 80px;
+    }
+    
+    .header-content {
+        width: auto;
+        margin-bottom: 0;
+    }
+    
+    header nav {
+        width: auto;
+        flex-direction: row;
+    }
+}
