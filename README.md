@@ -15,20 +15,27 @@ Il propose une mise en forme alternative de la base de données **Philidor 4**, 
 
 ## Fonctionnement
 
-La vitrine statique est générée à partir d’**un fichier XML extrait de la base Philidor 4**, enrichi ponctuellement avec des données issues d’une version antérieure de la base (*Philidor*).
+La vitrine statique est le résultat d'une transformation XSLT qui s’effectue via **un logiciel développé en Python**, ce dernier peut-être installé sur n'importe quel poste.
 
-La transformation s’effectue via **une application web développée en local avec Flask**, installée sur un poste de la bibliothèque du CMBV.
+La vitrine statique est générée à partir d’**un fichier XML extrait de la base Philidor 4**, enrichi ponctuellement avec des données saisies directement dans le logiciel et le plus souvent issues d’une version antérieure de la base (*Philidor*).
 
-- L'utilisateur charge le document XML et la feuille de style XSLT via l’interface.
-- L’application utilise Saxon/CHE pour effectuer la transformation XSLT côté serveur.
+- L'utilisateur complète l'ensemble des données éditoriales dans le logiciel.
+- L'utilisateur charge le document XML via l'interface.
+- L’application utilise la bibliothèque 
+saxonche
+ pour effectuer la transformation XSLT.
 - Le site HTML est généré automatiquement et compressé dans une archive ZIP téléchargeable.
 
 ## Technologies principales
 
-- **Python + Flask** : interface web locale
-- **Saxon/CHE** : moteur XSLT en Python (via ```saxonche```)
+- **Python + PySide6** : interface graphique
+- **Saxon/CHE** : moteur XSLT en Python (via 
+saxonche
+)
 - **HTML statique** généré intégralement via la feuille de style XSLT
-- **Dossier ```statics/```** : contient les feuilles de style CSS, images et polices respectant la charte graphique du CMBV
+- **Dossier 
+statics/
+** : contient la feuille de style CSS, le JavaScript, les images et les polices respectant la charte graphique du CMBV
 
 ---
 
@@ -56,4 +63,3 @@ Nos remerciements chaleureux vont à l’ensemble des équipes du CMBV ayant con
 ## Contact
 
 Pour toute question ou contribution : bibliotheque@cmbv.com
-

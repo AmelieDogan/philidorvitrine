@@ -4,7 +4,7 @@ from .projects_list import ProjectsListWidget
 from .presentation_editor import PresentationEditor
 from .legal_mentions_editor import LegalMentionsEditor
 from .about_editor import AboutEditor
-from .transformation import TransformationWidget
+from .transformation import AutoTransformationWidget
 
 class MainWindow(QMainWindow):
     def __init__(self, project_manager, save_projects_callback, presentation, save_presentation_callback, legal_mentions, save_legal_mentions_callback, about, save_about_callback):
@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         self.legal_mentions_editor = LegalMentionsEditor(self.legal_mentions, self)
         self.about_editor = AboutEditor(self.about, self)
 
-        self.transformation_widget = TransformationWidget()
+        self.transformation_widget = AutoTransformationWidget()
 
         self.tabs.addTab(self.create_tab("La future page d'accueil du logiciel"), "Accueil")
         self.tabs.addTab(self.presentation_editor, "Présentation")
