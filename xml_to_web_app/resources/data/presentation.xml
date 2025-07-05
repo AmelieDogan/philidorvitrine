@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<presentation uuid="b70a8016-0a7a-4a29-b978-8d7bca48fefa" created="2025-06-12T12:54:40.032937" updated="2025-06-12T15:43:05.337570">
+<presentation uuid="b70a8016-0a7a-4a29-b978-8d7bca48fefa" created="2025-06-12T12:54:40.032937" updated="2025-07-05T15:01:43.875709">
   <title>Philidor Vitrine</title>
   <subtitle>Une édition numérique de la base Philidor4</subtitle>
-  <content>&lt;div class="presentation-welcome"&gt;
-&lt;h2&gt;Bienvenue dans cette &amp;eacute;dition num&amp;eacute;rique&lt;/h2&gt;
-&lt;p&gt;Cette &amp;eacute;dition num&amp;eacute;rique pr&amp;eacute;sente une collection d'&amp;oelig;uvres organis&amp;eacute;es par projets. Vous pouvez naviguer &amp;agrave; travers les diff&amp;eacute;rentes &amp;oelig;uvres et d&amp;eacute;couvrir leur contenu.&lt;/p&gt;
-&lt;h3&gt;Comment naviguer&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;Explorez les projets dans le menu principal&lt;/li&gt;
-&lt;li&gt;Consultez les &amp;oelig;uvres individuelles, les fragments et les sources&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Bonne d&amp;eacute;couverte !&lt;/p&gt;
-&lt;/div&gt;</content>
+  <content>&lt;h2&gt;Bienvenue dans cette &amp;eacute;dition num&amp;eacute;rique&lt;/h2&gt;
+&lt;p&gt;Cette &amp;eacute;dition num&amp;eacute;rique propose une &lt;strong&gt;mise en forme alternative de la base de donn&amp;eacute;es PHILIDOR4&lt;/strong&gt;, con&amp;ccedil;ue par le Centre de Musique Baroque de Versailles (CMBV). Elle vise &amp;agrave; offrir une &lt;strong&gt;entr&amp;eacute;e simplifi&amp;eacute;e, &amp;eacute;ditorialis&amp;eacute;e et structur&amp;eacute;e&lt;/strong&gt; vers un ensemble riche de donn&amp;eacute;es scientifiques, en s'adressant &amp;agrave; un public &amp;eacute;largi : chercheurs, musiciens, amateurs d&amp;rsquo;histoire culturelle et m&amp;eacute;lomanes curieux.&lt;/p&gt;
+&lt;p&gt;Con&amp;ccedil;ue &amp;laquo;&amp;nbsp;&lt;em&gt;&amp;agrave; la mani&amp;egrave;re d&amp;rsquo;un catalogue papier&lt;/em&gt;&amp;nbsp;&amp;raquo;, cette vitrine num&amp;eacute;rique accompagne et compl&amp;egrave;te l&amp;rsquo;interface de recherche existante de PHILIDOR4. Elle met en lumi&amp;egrave;re la diversit&amp;eacute; et la profondeur des informations disponibles, tout en garantissant la rigueur scientifique et l'int&amp;eacute;grit&amp;eacute; des donn&amp;eacute;es.&lt;/p&gt;
+&lt;h3&gt;&amp;Agrave; propos de PHILIDOR4&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;PHILIDOR4&lt;/strong&gt; est le portail de donn&amp;eacute;es scientifiques d&amp;eacute;velopp&amp;eacute; par le &lt;strong&gt;p&amp;ocirc;le recherche du CMBV&lt;/strong&gt;. Il f&amp;eacute;d&amp;egrave;re plus de 120 bases constitu&amp;eacute;es entre 1996 et 2004, couvrant un vaste champ d&amp;rsquo;informations sur la musique et les arts du spectacle en France aux XVII&lt;sup&gt;e&lt;/sup&gt; et XVIII&lt;sup&gt;e&lt;/sup&gt; si&amp;egrave;cles.&lt;/p&gt;
+&lt;p&gt;Ces bases comprennent des &lt;em&gt;catalogues d&amp;rsquo;auteurs&lt;/em&gt;, &lt;em&gt;r&amp;eacute;pertoires de sources&lt;/em&gt;, &lt;em&gt;inventaires d&amp;rsquo;archives&lt;/em&gt;, &lt;em&gt;chronologies&lt;/em&gt; et &lt;em&gt;donn&amp;eacute;es prosopographiques&lt;/em&gt;. L&amp;rsquo;&amp;eacute;dition num&amp;eacute;rique pr&amp;eacute;sent&amp;eacute;e ici en propose une s&amp;eacute;lection organis&amp;eacute;e, accompagn&amp;eacute;e de descriptions, de regroupements th&amp;eacute;matiques et de passerelles internes.&lt;/p&gt;
+&lt;h3&gt;Pourquoi cette vitrine ?&lt;/h3&gt;
+&lt;p&gt;Cette &amp;eacute;dition r&amp;eacute;pond &amp;agrave; un double objectif : &lt;strong&gt;faciliter l&amp;rsquo;exploration des ressources&lt;/strong&gt; pour les utilisateurs peu familiers des interfaces de recherche complexes, et &lt;strong&gt;mettre en valeur les contenus&lt;/strong&gt; de fa&amp;ccedil;on coh&amp;eacute;rente avec les exigences de lisibilit&amp;eacute;, de m&amp;eacute;diation scientifique et de diffusion publique.&lt;/p&gt;
+&lt;p&gt;Elle a &amp;eacute;t&amp;eacute; con&amp;ccedil;ue comme un &lt;strong&gt;outil compl&amp;eacute;mentaire&lt;/strong&gt;, favorisant la consultation, la d&amp;eacute;couverte, et la r&amp;eacute;utilisation des donn&amp;eacute;es dans le respect des principes FAIR (Faciles &amp;agrave; trouver, Accessibles, Interop&amp;eacute;rables, R&amp;eacute;utilisables).&lt;/p&gt;
+&lt;p&gt;Pour en savoir plus sur le projet, son fonctionnement technique, ou ses auteurs, rendez-vous sur la page &lt;a href="about.html"&gt;&amp;Agrave; propos&lt;/a&gt;.&lt;/p&gt;</content>
 </presentation>

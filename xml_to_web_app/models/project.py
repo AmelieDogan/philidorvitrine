@@ -18,6 +18,7 @@ from ..utils.xml_utils import (
     ValidationError
 )
 
+from ..utils.html_utils import truncate_html_safely
 
 @dataclass
 class Project:
@@ -37,6 +38,7 @@ class Project:
     id: str = ""
     name: str = ""
     description_html: str = ""
+    truncated_html: str = field(default="", repr=False)
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
     
@@ -50,6 +52,7 @@ class Project:
     def update_content(self, description_html: str) -> None:
         """Met à jour le contenu HTML et la date de modification."""
         self.description_html = description_html.strip()
+        self.truncated_html = truncate_html_safely(self.description_html, max_chars=600)
         self.updated_at = datetime.now()
     
     def to_xml_element(self) -> ET.Element:
@@ -58,7 +61,8 @@ class Project:
         
         Format:
         <project id="identifiant_projet" created="ISO_date" updated="ISO_date" uuid="uuid" name="nom_projet">
-            contenu HTML
+            <description_html>contenu HTML</description_html>
+            <preview>contenu HTML tronqué</preview>
         </project>
         
         Returns:
@@ -71,9 +75,14 @@ class Project:
         project_elem.set("uuid", self.uuid)
         project_elem.set("name", self.name)
         
-        # Ajoute le contenu HTML
         if self.description_html:
-            project_elem.text = self.description_html
+            desc_elem = ET.SubElement(project_elem, "description_html")
+            desc_elem.text = self.description_html
+
+        if self.truncated_html:
+            preview_elem = ET.SubElement(project_elem, "preview")
+            preview_elem.text = self.truncated_html
+
         
         return project_elem
     

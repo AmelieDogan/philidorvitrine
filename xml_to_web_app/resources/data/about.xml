@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<about uuid="efc222cf-3b3f-446e-9700-1d8a65f9cb9c" created="2025-06-12T18:23:18.929376" updated="2025-06-12T18:25:24.043938">
-  <content>&lt;p&gt;Bonjour, il faudrait penser &amp;agrave; me compl&amp;eacute;ter... hihi&lt;/p&gt;</content>
+<about uuid="efc222cf-3b3f-446e-9700-1d8a65f9cb9c" created="2025-06-12T18:23:18.929376" updated="2025-07-05T15:04:05.763056">
+  <content>&lt;h2&gt;&amp;Agrave; propos de l&amp;rsquo;&amp;eacute;dition num&amp;eacute;rique de PHILIDOR4&lt;/h2&gt;
+&lt;p&gt;Ce site est une &lt;strong&gt;vitrine &amp;eacute;ditorialis&amp;eacute;e&lt;/strong&gt; de la base de donn&amp;eacute;es &lt;strong&gt;PHILIDOR4&lt;/strong&gt;, d&amp;eacute;velopp&amp;eacute;e par le &lt;em&gt;Centre de Musique Baroque de Versailles (CMBV)&lt;/em&gt;. Il a &amp;eacute;t&amp;eacute; con&amp;ccedil;u comme une interface alternative et compl&amp;eacute;mentaire, &amp;agrave; destination d&amp;rsquo;un public plus large que celui des chercheurs sp&amp;eacute;cialis&amp;eacute;s.&lt;/p&gt;
+&lt;p&gt;Cette &amp;eacute;dition vise &amp;agrave; rendre plus accessibles les donn&amp;eacute;es scientifiques issues des travaux men&amp;eacute;s depuis 1996 par le p&amp;ocirc;le recherche du CMBV, autour de la musique et des arts du spectacle en France aux XVII&lt;sup&gt;e&lt;/sup&gt; et XVIII&lt;sup&gt;e&lt;/sup&gt; si&amp;egrave;cles. Une s&amp;eacute;lection de bases de donn&amp;eacute;es a &amp;eacute;t&amp;eacute; organis&amp;eacute;e selon une logique th&amp;eacute;matique et pr&amp;eacute;sent&amp;eacute;e &amp;laquo;&amp;nbsp;&lt;em&gt;&amp;agrave; la mani&amp;egrave;re d&amp;rsquo;un catalogue&lt;/em&gt;&amp;nbsp;&amp;raquo;, permettant une lecture progressive et contextualis&amp;eacute;e.&lt;/p&gt;
+&lt;h3&gt;Conception et r&amp;eacute;alisation&lt;/h3&gt;
+&lt;p&gt;Le projet &lt;strong data-start="258" data-end="277"&gt;PhilidorVitrine&lt;/strong&gt; est port&amp;eacute; par le CMBV, en particulier par &lt;strong data-start="336" data-end="352"&gt;Am&amp;eacute;lie Dogan&lt;/strong&gt;, stagiaire au sein de la biblioth&amp;egrave;que du centre dans le cadre de sa deuxi&amp;egrave;me ann&amp;eacute;e de master &amp;laquo; Technologies num&amp;eacute;riques appliqu&amp;eacute;es &amp;agrave; l&amp;rsquo;histoire &amp;raquo; &amp;agrave; l&amp;rsquo;&amp;Eacute;cole nationale des chartes. R&amp;eacute;alis&amp;eacute; en collaboration avec le p&amp;ocirc;le recherche, ce projet repose sur une cha&amp;icirc;ne de production compl&amp;egrave;te qui transforme les donn&amp;eacute;es XML issues de PHILIDOR4 en un site HTML statique.&lt;/p&gt;
+&lt;p&gt;L&amp;rsquo;ensemble du logiciel &amp;mdash; incluant l&amp;rsquo;interface graphique en Python, la structure de traitement des donn&amp;eacute;es et la feuille de transformation XSLT &amp;mdash; a &amp;eacute;t&amp;eacute; con&amp;ccedil;u et d&amp;eacute;velopp&amp;eacute; par Am&amp;eacute;lie Dogan sp&amp;eacute;cifiquement pour cette &amp;eacute;dition.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Interface utilisateur :&lt;/strong&gt; application Python + PySide6&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Transformation :&lt;/strong&gt; XSLT via la biblioth&amp;egrave;que Saxon/CHE&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Structure finale :&lt;/strong&gt; HTML statique conforme &amp;agrave; la charte graphique du CMBV&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Le logiciel permet de compl&amp;eacute;ter les contenus &amp;eacute;ditoriaux, de charger les donn&amp;eacute;es XML extraites de PHILIDOR4, et de g&amp;eacute;n&amp;eacute;rer automatiquement une archive contenant le site web pr&amp;ecirc;t &amp;agrave; &amp;ecirc;tre mis en ligne.&lt;/p&gt;
+&lt;h3&gt;Public vis&amp;eacute;&lt;/h3&gt;
+&lt;p&gt;Cette &amp;eacute;dition num&amp;eacute;rique s&amp;rsquo;adresse :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;aux &lt;strong&gt;chercheurs&lt;/strong&gt; en musicologie, lettres, histoire et arts du spectacle,&lt;/li&gt;
+&lt;li&gt;aux &lt;strong&gt;musiciens et enseignants&lt;/strong&gt; souhaitant explorer les r&amp;eacute;pertoires baroques,&lt;/li&gt;
+&lt;li&gt;aux &lt;strong&gt;amateurs &amp;eacute;clair&amp;eacute;s&lt;/strong&gt; ou curieux de d&amp;eacute;couvrir les &amp;oelig;uvres et sources de cette &amp;eacute;poque.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h3&gt;Remerciements&lt;/h3&gt;
+&lt;p&gt;Ce projet n&amp;rsquo;aurait pu voir le jour sans l&amp;rsquo;implication des &amp;eacute;quipes du CMBV ayant contribu&amp;eacute; &amp;agrave; la structuration et &amp;agrave; l&amp;rsquo;enrichissement de la base PHILIDOR depuis pr&amp;egrave;s de trois d&amp;eacute;cennies. Qu&amp;rsquo;ils en soient chaleureusement remerci&amp;eacute;s.&lt;/p&gt;
+&lt;p&gt;Pour toute remarque ou question, vous pouvez nous contacter &amp;agrave; l&amp;rsquo;adresse suivante : &lt;a href="mailto:bibliotheque@cmbv.com"&gt;bibliotheque@cmbv.com&lt;/a&gt;.&lt;/p&gt;</content>
 </about>

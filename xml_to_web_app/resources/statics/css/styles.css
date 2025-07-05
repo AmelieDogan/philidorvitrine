@@ -1,0 +1,932 @@
+/* Styles pour le Centre de Musique Baroque de Versailles - Edition numérique de PHILIDOR4
+ * Basé sur la charte graphique CMBV 2023
+ */
+
+/* Importation des polices (à remplacer par les versions réelles) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Note: Hermes et Dala Moa sont des polices personnalisées qui nécessiteraient d'être hébergées */
+@font-face {
+    font-family: Dala Moa;
+    src: url('../polices/Dala\ Moa/Dala\ Moa\ Bold.otf');
+    font-weight: bold;
+}
+@font-face {
+    font-family: Hermes;
+    src: url('../polices/Hermes/Hermes-Regular.otf');
+}
+/* En attendant, on utilise des alternatives */
+
+:root {
+    --bichro-rouge-clair: #f5a8c8;
+    --bichro-rouge: #fd766c;
+    --bichro-rouge-fonce: #b9544e;
+    --bichro-bleu-clair: #5192bd;
+    --bichro-bleu: #0763a1;
+    --bichro-nuit-clair: #4d5c70;
+    --bichro-nuit: #001632;
+    --bichro-or: #bf957a;
+    --bichro-or-fonce: #a06d4d;
+    --bichro-gris: #eeedec;
+    --bichro-gris-fonce: #d3d5d5;
+    --bichro-noir: #001632;
+    --bichro-blanc: #fff;
+    /* Espacement */
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --padding: 6rem
+}
+
+/* Styles généraux */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--bichro-noir);
+    background-color: var(--bichro-blanc);
+    margin: 0 auto;
+    position: relative;
+}
+
+h1, h2, h3 {
+    font-family: 'Dala Moa';
+    font-weight: normal;
+    color: var(--bichro-or);
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+h1 a {
+    color: var(--bichro-or);
+    text-decoration: none;
+}
+
+h1 a:hover {
+    color: var(--bichro-or-fonce);
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+.btn {
+    font-family: "Hermes";
+    text-transform: uppercase;
+    font-size: .8rem;
+    font-weight: 700;
+    padding: var(--spacing-sm);
+    color: var(--bichro-or);
+    border-radius: 30px;
+    border: 2px solid var(--bichro-or);
+}
+
+.btn:hover {
+    color: var(--bichro-blanc);
+    background-color: var(--bichro-or);
+    border: 3px solid var(--bichro-or);
+}
+
+/* Retour en haut */
+.retour-haut {
+    bottom: 120px !important;
+    right: 12px !important;
+    backface-visibility: hidden;
+    background: rgba(0,22,50,.8);
+    border: none;
+    color: var(--bichro-blanc);
+    cursor: pointer;
+    height: 36px;
+    outline: none;
+    perspective: 1000px;
+    position: fixed;
+    transition-duration: .2s;
+    width: 36px;
+    z-index: 20;
+}
+
+.retour-haut::before {
+    border-bottom: 15px solid;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    content: "";
+    display: block;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -8px;
+    position: absolute;
+    top: 50%;
+}
+
+/* Rayon */
+.rayon {
+    color: var(--bichro-blanc);
+    padding: 20px 10px 10px 20px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    text-decoration: none;
+}
+
+.rayon::before {
+    border-color: transparent var(--bichro-bleu) var(--bichro-bleu) transparent;
+    border-style: solid;
+    border-width: 30px 60px 60px 120px;
+    content: "";
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    pointer-events: none;
+    transition: border .2s;
+}
+
+.rayon:focus::before, .rayon:hover::before {
+    border-color: transparent #054570 #054570 transparent;
+    border-style: solid;
+    border-width: 40px 65px 80px 130px;
+}
+
+.rayon-text {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    color: var(--bichro-blanc);
+    position: relative;
+    z-index: 10;
+}
+
+/* Header avec logo animé */
+header {
+    position: relative;
+    padding: var(--spacing-lg) var(--padding) var(--spacing-lg) var(--padding);
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    background-color: var(--bichro-blanc);
+    box-shadow: 0 0 20px -18px rgba(0, 0, 10, .1), 0 10px 50px -18px rgba(0, 0, 10, .32);
+    z-index: 9999;
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+    text-align: right;
+}
+
+.header-content h1 {
+    margin-bottom: 1rem;
+}
+
+.header-content h2 {
+    font-family: "Hermes";
+    font-size: 1.5rem;
+    font-weight: normal;
+}
+
+header .logo {
+    position: relative;
+    font-family: 'Arial Black', sans-serif; /* Substitut pour le logo */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--bichro-noir);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header .logo svg {
+    height: 150px;
+}
+
+.logo-line {
+    transition: height 0.5s ease, y 0.5s ease;
+}
+
+mask circle {
+    transition: r 0.5s ease;
+}
+
+nav {
+    padding: var(--spacing-lg) var(--padding) var(--spacing-lg) var(--padding);
+    margin: var(--spacing-md) 0 var(--spacing-md) 0;
+}
+
+nav a {
+    font-family: "Hermes";
+    font-size: 1rem;
+    padding: var(--spacing-md);
+    color: var(--bichro-or);
+    border-radius: 30px;
+    border: 2px solid var(--bichro-or);
+}
+
+nav a:hover {
+    color: var(--bichro-blanc);
+    background-color: var(--bichro-or);
+    border: 3px solid var(--bichro-or);
+}
+
+/* Main content */
+main {
+    position: relative;
+    padding: 0 var(--padding);
+}
+
+main h2 {
+    font-size: 2.35rem;
+    line-height: 1.1;
+    color: var(--bichro-rouge);
+    margin-bottom: 1.75rem;
+    margin-top: 3.5rem;
+    text-align: center;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+main h2::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 0px;
+    border-bottom: 8px dotted var(--bichro-rouge);
+}
+
+main a {
+    color: var(--bichro-bleu);
+    text-decoration: none;
+    border-bottom: 0.05em dotted;
+    cursor: pointer;
+}
+
+main a:hover {
+    border-bottom: 0.1em dotted;
+}
+
+main p {
+    padding: 7px 0 7px 0;
+}
+
+main li {
+    margin-left: 25px;
+    padding: 3px 0 3px 15px;
+}
+
+main td {
+    padding: var(--spacing-sm);
+}
+
+.bandeau-box {
+    width: 100%;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    height: 550px;
+}
+
+.bandeau {
+    position: absolute;
+    height: 100%;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: row;
+}
+
+main section {
+    padding: 40px;
+}
+
+.white-box {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-top: 200px;
+    background-color: var(--bichro-blanc);
+}
+
+.blue-box {
+    height: 100%;
+    flex-basis: 350px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    background-color: var(--bichro-bleu);
+    margin-top: 150px;
+    color: var(--bichro-blanc);
+    box-shadow: 0 0 50px -18px rgba(0, 0, 10, .1), 0 40px 50px -18px rgba(0, 0, 10, .32);
+}
+
+.blue-box h3 {
+    font-family: 'Hermes';
+    color: var(--bichro-blanc);
+}
+
+.blue-box ul {
+    list-style-type: none;
+    margin: var(--spacing-lg) 0;
+}
+
+.blue-box ul li {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--bichro-gris-fonce);
+}
+
+.blue-box ul a {
+    color: var(--bichro-blanc);
+}
+
+.blue-box ul a:hover {
+    color: var(--bichro-blanc);
+}
+
+.accordeon .content {
+    display: none;
+}
+.accordeon.active .content {
+    display: block;
+}
+.accordeon .header {
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 0 !important;
+}
+
+.accordeon .header h3 {
+    font-family: 'Hermes';
+    color: var(--bichro-noir);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.3;
+    text-transform: uppercase;
+    margin: 0;
+    padding-bottom: 13px;
+    padding-right: 1.5em;
+    padding-top: 12px;
+}
+
+.separator {
+    border-bottom: 1px solid;
+    bottom: 0;
+    left: 0;
+    opacity: .4;
+    position: absolute;
+    transition: .2s;
+    width: 100%;
+}
+
+.accordeon.active .separator {
+    opacity: 0;
+}
+
+.chevron {
+    display: inline-block;
+    font-size: 2.5em;
+    line-height: 1;
+    position: absolute;
+    right: .4em;
+    text-align: right;
+    top: 50%;
+    width: 1.2em;
+    transform: translateY(-50%) rotate(0deg);
+}
+
+.accordeon.active .chevron {
+    right: 0;
+    top: 20%;
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.accordeon .header:hover {
+    background: rgba(0, 22, 50, .05);
+}
+
+/* Styles pour la pagination */
+.pagination-container {
+    margin: 10px 0;
+}
+
+.paginated-list {
+    list-style-type: disc;
+    margin: 0 0 15px 0;
+    padding-left: 20px;
+}
+
+.paginated-list li {
+    margin: 5px 0;
+    transition: opacity 0.3s ease;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: var(--bichro-gris);
+    border-radius: 5px;
+    border: 1px solid var(--bichro-gris-fonce);
+}
+
+.pagination-btn {
+    background-color: var(--bichro-or);
+    color: var(--bichro-blanc);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    min-width: 100px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: var(--bichro-or-fonce);
+}
+
+.pagination-btn:disabled,
+.pagination-btn.disabled {
+    background-color: var(--bichro-nuit-clair);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: var(--bichro-nuit-clair);
+    font-weight: 500;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.current-page {
+    font-weight: bold;
+    color: var(--bichro-or);
+}
+
+.total-pages {
+    font-weight: bold;
+}
+
+/* Style responsive pour les petits écrans */
+@media (max-width: 768px) {
+    .pagination-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .pagination-btn {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .pagination-info {
+        order: -1;
+        margin-bottom: 10px;
+    }
+}
+
+/* Animation pour les changements de page */
+.paginated-list li {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Footer */
+
+footer {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--bichro-gris);
+    text-align: center;
+    border-top: 1px solid var(--bichro-gris);
+}
+
+footer p {
+    margin-bottom: var(--spacing-sm);
+}
+
+footer .smaller {
+    font-size: 0.8rem;
+    color: var(--b);
+    font-style: italic;
+}
+
+footer a {
+    color: var(--bichro-noir);
+    text-decoration: none;
+    background-image: linear-gradient(0deg,currentColor .08em,transparent 0);
+    background-repeat: no-repeat;
+    background-size: 0 100%;
+    display: inline;
+    transition: background-size .2s;
+}
+
+footer a:hover {
+    background-size: 100% 100%;
+    color: var(--bichro-rouge);
+}
+
+/* Index content */
+.work-count {
+    font-size: 0.9rem;
+    margin-left: var(--spacing-sm);
+}
+
+/* Project content */
+.project-content {
+    margin-bottom: var(--spacing-xl);
+}
+
+.preview-box p {
+    margin: var(--spacing-sm) 0 var(--spacing-md) 0;
+}
+
+.recueil-content {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-xl) var(--spacing-lg);
+    background-color: var(--bichro-gris);
+}
+
+.recueil-content h3 {
+    color: var(--bichro-noir);
+    margin-top: 0;
+}
+
+.work-list {
+    list-style-type: none;
+}
+
+.work-list li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.single-column {
+    column-count: 1;
+}
+
+/* Work details */
+.work-details {
+    background-color: var(--bichro-blanc);
+    box-shadow: 0 0 50px -18px rgba(0, 0, 10, .1), 0 40px 50px -18px rgba(0, 0, 10, .32);
+    padding: var(--spacing-md);
+    margin-top: 200px;
+    margin-bottom: var(--spacing-xl);
+}
+
+.work-details h2 {
+    color: var(--bichro-noir);
+    font-family: "Hermes";
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-lg);
+    position: relative;
+    display: inline-block;
+}
+
+.work-details h2::after {
+    content: '';
+    border-bottom: 0;
+}
+
+.notice-num {
+    text-align: right;
+    padding-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    width: 100%;
+    border-bottom: 1px dashed var(--bichro-rouge);
+}
+
+.notice-num .num {
+    font-size: larger;
+    color: var(--bichro-rouge);
+}
+
+.notice-num .num-orig {
+    font-size: medium;
+}
+
+.main-informations {
+    margin-top: var(--spacing-lg);
+}
+
+.main-informations .field {
+    margin-top: var(--spacing-md);
+}
+
+.main-informations a {
+    color: var(--bichro-or);
+    border-bottom: 0;
+}
+
+.main-informations a:hover {
+    color: var(--bichro-or-fonce);
+    border-bottom: 0;
+}
+
+.field {
+    margin: var(--spacing-sm) 0 var(--spacing-sm) 0;
+}
+
+.work-text {
+    margin-top: var(--spacing-md);
+    padding-left: var(--spacing-md);
+    border-left: 4px solid var(--bichro-or);
+}
+
+
+/* Améliorations responsive pour le Centre de Musique Baroque de Versailles - PHILIDOR4
+ * Basé sur la charte graphique CMBV 2023
+ * 
+ */
+
+/* Media query pour les tablettes (992px et moins) */
+@media (max-width: 992px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--spacing-md);
+        height: auto;
+    }
+    
+    header .rayon {
+        height: 40px; /* Rayon plus petit sur tablette */
+    }
+    
+    .header-content {
+        height: auto;
+        width: 100%;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    header .logo {
+        height: 120px;
+        margin: var(--spacing-md) 0;
+        align-self: center;
+    }
+    
+    header nav {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    header nav a {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 1rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .genre-links {
+        column-count: 2; /* Maintient 2 colonnes sur tablette */
+    }
+    
+    .work-details {
+        padding: var(--spacing-md);
+    }
+}
+
+/* Media query pour les smartphones (768px et moins) */
+@media (max-width: 768px) {
+    :root {
+        /* Réduction des espacements pour mobile */
+        --spacing-md: 0.75rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+    }
+    
+    body {
+        padding: 0;
+    }
+    
+    header {
+        padding: var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    header .rayon {
+        height: 30px; /* Rayon encore plus petit sur mobile */
+        transform: rotate(-45deg) translateX(-50%); /* Angle différent sur mobile */
+    }
+    
+    .header-content h1 {
+        font-size: 1.8rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .header-content h2 {
+        font-size: 1.2rem;
+    }
+    
+    header .logo {
+        height: 80px;
+    }
+    
+    header nav {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+    
+    header nav a {
+        display: block;
+        width: 80%;
+        text-align: center;
+        margin-bottom: var(--spacing-sm);
+        border-radius: 20px;
+    }
+    
+    main {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    h3 {
+        font-size: 1.3rem;
+    }
+    
+    .genre-links {
+        column-count: 1; /* Une seule colonne sur mobile */
+    }
+    
+    .work-list {
+        margin-left: 0;
+    }
+    
+    .work-details {
+        padding: var(--spacing-sm);
+    }
+    
+    .work-details h2::after {
+        width: 30px;
+    }
+    
+    .metadata dt {
+        margin-top: var(--spacing-sm);
+    }
+    
+    .metadata dd {
+        margin-left: var(--spacing-sm);
+    }
+    
+    .project-list li {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .back-to-top {
+        margin: var(--spacing-md) 0;
+    }
+    
+    footer {
+        padding: var(--spacing-md);
+        margin-top: var(--spacing-md);
+    }
+}
+
+/* Media query pour les petits smartphones (576px et moins) */
+@media (max-width: 576px) {
+    .header-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-content h2 {
+        font-size: 1rem;
+    }
+    
+    header .logo {
+        height: 60px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+    
+    h3 {
+        font-size: 1.1rem;
+    }
+    
+    .genre-summary {
+        padding: var(--spacing-sm);
+    }
+    
+    header nav a {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 0.9rem;
+    }
+    
+    /* Optimisation pour les tableaux de métadonnées sur petits écrans */
+    .metadata {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    
+    .metadata dt {
+        background-color: var(--cmbv-light-grey);
+        padding: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+        margin-bottom: 0;
+    }
+    
+    .metadata dd {
+        margin-left: 0;
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Améliorations générales de l'interface tactile pour mobiles */
+@media (hover: none) {
+    /* Optimisations pour écrans tactiles */
+    a, button, .back-to-top a, header nav a {
+        padding: var(--spacing-md); /* Cibles tactiles plus grandes */
+    }
+    
+    header nav a {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .work-list li, .project-list li {
+        padding: var(--spacing-sm) 0; /* Plus d'espace pour les touches */
+    }
+}
+
+/* Optimisation pour les orientations */
+@media (max-width: 992px) and (orientation: landscape) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header .logo {
+        margin: 0;
+        height: 80px;
+    }
+    
+    .header-content {
+        width: auto;
+        margin-bottom: 0;
+    }
+    
+    header nav {
+        width: auto;
+        flex-direction: row;
+    }
+}

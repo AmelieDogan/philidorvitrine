@@ -80,16 +80,33 @@ class XMLProcessor(QObject):
     def _clean_xml_content(self, xml_content):
         """Nettoie le contenu XML en corrigeant et supprimant les balises défectueuses"""
         try:            
-            # Correction des balises <Anonyme> et </Anonyme>
             xml_content = xml_content.replace('<Anonyme>', '<item key="Anonyme">')
             xml_content = xml_content.replace('</Anonyme>', '</item>')
             xml_content = xml_content.replace('<nomsFonctions><item key=""></item></nomsFonctions>', '')
+
+            xml_content = xml_content.replace('&', '&amp;')
+            xml_content = xml_content.replace(' < ', ' &lt; ')
+            xml_content = xml_content.replace(' > ', ' &gt; ')
+            #xml_content = xml_content.replace('.><', '.&gt;&lt;')
+            
+            # Suppression des balises commençant par une majuscule avec leur contenu
+            # Exclut : URL, VIAF, ISNI, IDREF, BNF_aut
+            pattern_majuscules = r'<(?!(?:URL|VIAF|ISNI|IDREF|BNF_aut)\b)[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-Za-zÀÂÄÉÈÊËÏÎÔÙÛÜŸÇàâäéèêëïîôùûüÿç._-]*>.*?</(?!(?:URL|VIAF|ISNI|IDREF|BNF_aut)\b)[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-Za-zÀÂÄÉÈÊËÏÎÔÙÛÜŸÇàâäéèêëïîôùûüÿç._-]*>'
+            xml_content = re.sub(pattern_majuscules, '', xml_content, flags=re.DOTALL)
+            
+            # Suppression des balises auto-fermantes commençant par une majuscule (même exclusions)
+            pattern_auto_fermantes = r'<(?!(?:URL|VIAF|ISNI|IDREF|BNF_aut)\b)[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-Za-zÀÂÄÉÈÊËÏÎÔÙÛÜŸÇàâäéèêëïîôùûüÿç._-]*/>'
+            xml_content = re.sub(pattern_auto_fermantes, '', xml_content)
+            
+            # Optionnel : nettoyer les lignes vides multiples créées par la suppression
+            xml_content = re.sub(r'\n\s*\n', '\n', xml_content)
             
             return xml_content
-            
+        
         except Exception as e:
-            self.error_occurred.emit(f"Erreur lors du nettoyage XML: {str(e)}")
-            return xml_content  # Retourne le contenu original en cas d'erreur
+            # Gérer l'erreur selon votre logique métier
+            print(f"Erreur lors du nettoyage XML: {e}")
+            return xml_content  # Retourner le contenu original en cas d'erreur
         
     def _merge_xml_files(self, main_xml_content):
         """Fusionne le fichier principal avec les fichiers de données"""

@@ -1,42 +1,1114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="html" encoding="UTF-8" indent="yes"/>
-    
+
+    <xsl:variable name="edition-title" select="//presentation_data/presentation/title"/>
+    <xsl:variable name="edition-subtitle" select="//presentation_data/presentation/subtitle"/>
+
     <!-- Variable pour stocker tous les projets uniques -->
     <xsl:key name="projects" match="//item" use="projet"/>
-    
+
     <!-- Template principal qui gère la création de toutes les pages -->
     <xsl:template match="/">
-        <!-- Créer la page d'index principal -->
         <xsl:call-template name="create-index"/>
-        
-        <!-- Créer une page pour chaque projet -->
+        <xsl:call-template name="create-legal-mentions"/>
+        <xsl:call-template name="create-about"/>
+        <!-- pages projets -->
         <xsl:for-each select="//item[generate-id(.) = generate-id(key('projects', projet)[1])]">
             <xsl:sort select="projet"/>
             <xsl:call-template name="create-project-page">
                 <xsl:with-param name="project" select="projet"/>
             </xsl:call-template>
         </xsl:for-each>
-        
-        <!-- Créer une page pour chaque œuvre -->
+        <!-- pages œuvres, sources, fragments -->
         <xsl:for-each select="//item">
-            <xsl:call-template name="create-work-page"/>
+            <xsl:choose>
+                <xsl:when test="nature = 'Oeuvre' and not(frag)">
+                    <xsl:call-template name="create-work-page"/>
+                </xsl:when>
+                <xsl:when test="nature = 'Source'">
+                    <xsl:call-template name="create-source-page"/>
+                </xsl:when>
+                <xsl:when test="nature = 'Fragment'">
+                    <xsl:call-template name="create-frag-page"/>
+                </xsl:when>
+            </xsl:choose>
         </xsl:for-each>
     </xsl:template>
-    
 
-    
-    <!-- Template utilitaire pour formater du texte avec des balises <br/> -->
+    <!-- Templates factorisés pour les éléments communs -->
+
+    <!-- Template pour générer le <head> commun -->
+    <xsl:template name="common-head">
+        <xsl:param name="page-path" select="''"/>
+        <head>
+            <meta charset="UTF-8"/>
+            <title>CMBV - <xsl:value-of select="$edition-title"/></title>
+            <link rel="stylesheet" type="text/css" href="{$page-path}statics/css/styles.css"/>
+            <script type="text/javascript" src="{$page-path}statics/js/logo.js"></script>
+        </head>
+    </xsl:template>
+
+    <!-- Template pour générer le header commun -->
+    <xsl:template name="common-header">
+        <xsl:param name="page-path" select="''"/>
+        <header>
+            <xsl:call-template name="cmbv-logo"/>
+            <div class="header-content">
+                <h1><a href="{$page-path}index.html"><xsl:value-of select="$edition-title"/></a></h1>
+                <h2><xsl:value-of select="$edition-subtitle"/></h2>
+            </div>
+        </header>
+    </xsl:template>
+
+    <!-- Template pour générer le bandeau (optionnel) -->
+    <xsl:template name="common-bandeau">
+        <xsl:param name="page-path" select="''"/>
+        <figure class="bandeau-box">
+            <img class="bandeau" src="{$page-path}statics/img/recherche-cmbv-accueil.jpg"/>
+        </figure>
+    </xsl:template>
+
+    <!-- Template pour générer le footer commun -->
+    <xsl:template name="common-footer">
+        <xsl:param name="page-path" select="''"/>
+        <footer>
+            <p><a href="{$page-path}legal_mentions.html">Mentions légales</a></p>
+            <p><a href="{$page-path}about.html">À propos</a></p>
+            <p>© Centre de Musique Baroque de Versailles - Base de données PHILIDOR4</p>
+            <p class="smaller">Faire rayonner la musique française des XVIIe et XVIIIe siècles</p>
+        </footer>
+        <a class="retour-haut" href="#"></a>
+        <a class="rayon" href="https://philidor4.cmbv.fr" target="_blank">
+            <div class="rayon-text"><p>PHILIDOR4</p></div>
+        </a>
+    </xsl:template>
+
+    <!-- Template refactorisé pour la page d'accueil -->
+    <xsl:template name="create-index">
+        <xsl:result-document href="output/index.html" method="html">
+            <html>
+                <xsl:call-template name="common-head">
+                    <xsl:with-param name="page-path" select="''"/>
+                </xsl:call-template>
+                <body>
+                    <xsl:call-template name="common-header">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                    
+                    <xsl:call-template name="common-bandeau">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                    
+                    <main>
+                        <div class="main-content">
+                            <section class="white-box">
+                                <xsl:value-of select="//presentation_data/presentation/content"/>
+                            </section>
+                            <section class="blue-box">
+                                <h3>Catalogues d'auteur</h3>
+                                <p>Sélectionnez un auteur pour voir les œuvres associées :</p>
+                                
+                                <ul class="project-list">
+                                    <xsl:for-each select="//item[generate-id(.) = generate-id(key('projects', projet)[1])]">
+                                        <xsl:sort select="//projects_data//project[@id = current()/projet]/@name"/>
+                                        <li>
+                                            <a href="projects/{translate(projet, ' ', '_')}.html">
+                                                <xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/>
+                                            </a>
+                                            <span class="work-count">
+                                                (<xsl:value-of select="count(//item[projet = current()/projet])"/> œuvres)
+                                            </span>
+                                        </li>
+                                    </xsl:for-each>
+                                </ul>
+                            </section>
+                        </div>
+                    </main>
+                    
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <!-- Template refactorisé pour les mentions légales -->
+    <xsl:template name="create-legal-mentions">
+        <xsl:result-document href="output/legal_mentions.html" method="html">
+            <html>
+                <xsl:call-template name="common-head">
+                    <xsl:with-param name="page-path" select="''"/>
+                </xsl:call-template>
+                <body>
+                    <xsl:call-template name="common-header">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                    
+                    <xsl:call-template name="common-bandeau">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                    
+                    <main>
+                        <section class="white-box">
+                            <xsl:value-of select="//legal_mentions_data/legal_mentions/content"/>
+                        </section>
+                    </main>
+                    
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <!-- Template pour la page "à propos" -->
+    <xsl:template name="create-about">
+        <xsl:result-document href="output/about.html" method="html">
+            <html>
+                <xsl:call-template name="common-head">
+                    <xsl:with-param name="page-path" select="''"/>
+                </xsl:call-template>
+                <body>
+                    <xsl:call-template name="common-header">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                    
+                    <xsl:call-template name="common-bandeau">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                    
+                    <main>
+                        <section class="white-box">
+                            <xsl:value-of select="//about_data/about/content"/>
+                        </section>
+                    </main>
+                    
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="''"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <!-- Template pour la page de presentation de chaque projet -->
+    <xsl:template name="create-project-page">
+        <xsl:param name="project"/>
+        <xsl:result-document href="output/projects/{translate($project, ' ', '_')}.html" method="html">
+            <html>
+                <xsl:call-template name="common-head">
+                    <xsl:with-param name="page-path" select="'../'"/>
+                </xsl:call-template>
+                <body>
+                    <xsl:call-template name="common-header">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <xsl:call-template name="common-bandeau">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <main>
+                        <!-- Contenu spécifique de la page projet -->
+                        <section class="white-box">
+                            <h2><xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/></h2>
+                            <div>
+                                <xsl:value-of select="//projects_data//project[@id = current()/projet]/preview/node()"/>
+                                <p><a href="#full-description">Lire la suite</a></p>
+                            </div>
+
+                            <h3>Liste des recueils</h3>
+                            <ul>
+                            <xsl:for-each select="//item[nature = 'Source']">
+                                <li><a href="../sources/{numero}.html">
+                                    <xsl:choose>
+                                        <xsl:when test="titre_cle_sre">
+                                            <xsl:value-of select="titre_cle_sre"/>
+                                        </xsl:when>
+                                        <xsl:when test="titre_cle">
+                                            <xsl:value-of select="titre_cle"/>
+                                        </xsl:when>
+                                        <xsl:when test="notice_bibl">
+                                            <xsl:call-template name="format-notice-ligne">
+                                                <xsl:with-param name="texte" select="notice_bibl"/>
+                                            </xsl:call-template>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            Titre non renseigné
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </a></li>
+                            </xsl:for-each>
+                            </ul>
+
+                            <h3>Listes des oeuvres</h3>
+
+                            <h3 id="full-description">Description du projet : <xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/></h3>
+                            <xsl:value-of select="//projects_data//project[@id = current()/projet]/description_html/node()"/>
+                        </section>
+                    </main>
+                    
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <!-- Template pour les pages des sources -->
+    <xsl:template name="create-source-page">
+        <xsl:result-document href="output/sources/{numero}.html" method="html">
+            <html>
+                <xsl:call-template name="common-head">
+                    <xsl:with-param name="page-path" select="'../'"/>
+                </xsl:call-template>
+                <body>
+                    <xsl:call-template name="common-header">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <xsl:call-template name="common-bandeau">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <main>
+                        <!-- Contenu spécifique de la page projet -->
+                        <section class="white-box">
+                            <div class="fiche">
+                                <xsl:call-template name="main-informations"/>
+                            </div>
+                                <xsl:call-template name="other-informations"/>
+                        </section>
+                    </main>
+                    
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <!-- Template pour les pages des oeuvres -->
+    <xsl:template name="create-work-page">
+        <xsl:result-document href="output/works/{numero}.html" method="html">
+            <html>
+                <xsl:call-template name="common-head">
+                    <xsl:with-param name="page-path" select="'../'"/>
+                </xsl:call-template>
+                <body>
+                    <xsl:call-template name="common-header">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <xsl:call-template name="common-bandeau">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <main>
+                        <section class="white-box">
+                            <div class="fiche">
+                                <xsl:call-template name="main-informations"/>
+                            </div>
+                                <xsl:call-template name="other-informations"/>
+                        </section>
+                    </main>
+                    
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <!-- Template pour les pages des fragments -->
+    <xsl:template name="create-frag-page">
+        <xsl:param name="project-id"/>
+        <xsl:result-document href="output/fragments/{numero}.html" method="html">
+            <html>
+                <xsl:call-template name="common-head">
+                    <xsl:with-param name="page-path" select="'../'"/>
+                </xsl:call-template>
+                <body>
+                    <xsl:call-template name="common-header">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <xsl:call-template name="common-bandeau">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    
+                    <main>
+                        <section class="white-box">
+                            <div class="fiche">
+                                <xsl:call-template name="main-informations"/>
+                            </div>
+                                <xsl:call-template name="other-informations"/>
+                        </section>
+                    </main>
+                    
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <xsl:template name="main-informations">
+
+            <div class="main-informations">
+            
+                <!-- Numéro et informations de base -->            
+                <xsl:if test="type_contenu">
+                <div class="field">
+                    <strong>Type de contenu : </strong>
+                    <span><xsl:value-of select="type_contenu"/></span>
+                </div>
+                </xsl:if>
+                
+                <xsl:if test="projet">
+                <div class="field">
+                    <strong>Projet : </strong>
+                    <a href="../projects/{translate(projet, ' ', '_')}.html"><xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/></a>
+                </div>
+                </xsl:if>
+
+                <!-- Personnes et fonctions avec pagination -->
+                <xsl:if test="nomsFonctions">
+                <div class="field work-text">
+                    <strong>Personnes ayant un rapport avec l'oeuvre : </strong>
+                    <xsl:choose>
+                        <xsl:when test="count(nomsFonctions/item) > 7">
+                            <!-- Container pour la pagination -->
+                            <div class="pagination-container" data-total-items="{count(nomsFonctions/item)}">
+                                <ul class="paginated-list">
+                                    <xsl:for-each select="nomsFonctions/item">
+                                        <li data-page="{ceiling(position() div 7)}">
+                                            <xsl:value-of select="@key"/> - <xsl:value-of select="."/>
+                                        </li>
+                                    </xsl:for-each>
+                                </ul>
+                                <!-- Contrôles de pagination -->
+                                <div class="pagination-controls">
+                                    <button class="pagination-btn" data-action="prev">← Précédent</button>
+                                    <span class="pagination-info">
+                                        Page <span class="current-page">1</span> sur <span class="total-pages"><xsl:value-of select="ceiling(count(nomsFonctions/item) div 7)"/></span>
+                                    </span>
+                                    <button class="pagination-btn" data-action="next">Suivant →</button>
+                                </div>
+                            </div>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <!-- Liste normale si 7 éléments ou moins -->
+                            <ul>
+                                <xsl:for-each select="nomsFonctions/item">
+                                    <li><xsl:value-of select="@key"/> - <xsl:value-of select="."/></li>
+                                </xsl:for-each>
+                            </ul>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </div>
+                </xsl:if>
+
+                <!-- Genres -->
+                <div class="field">
+                <strong>Genre musical : </strong>
+                <xsl:choose>
+                    <xsl:when test="genre_musical">
+                        <span><xsl:value-of select="genre_musical"/></span>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <span>Non renseigné</span>
+                    </xsl:otherwise>
+                </xsl:choose>
+                </div>
+
+                <div class="field">
+                <strong>Genre du texte : </strong>
+                <xsl:choose>
+                    <xsl:when test="genre_texte">
+                        <span><xsl:value-of select="genre_texte"/></span>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <span>Non renseigné</span>
+                    </xsl:otherwise>
+                </xsl:choose>
+                </div>
+
+                <!-- Cotes -->
+                <xsl:if test="cote_CMBV">
+                <div class="field">
+                    <strong>Cote CMBV : </strong>
+                    <span><xsl:value-of select="cote_CMBV"/></span>
+                </div>
+                </xsl:if>
+
+            </div>
+
+    </xsl:template>
+
+    <xsl:template name="other-informations">
+        
+        <!-- 1. Incipits -->
+        <xsl:call-template name="incipits-section"/>
+        
+        <!-- 2. Effectif et instrumentation -->
+        <xsl:call-template name="effectif-section"/>
+        
+        <!-- 3. Sources -->
+        <xsl:call-template name="sources-section"/>
+        
+        <!-- 4. Informations textuelles -->
+        <xsl:call-template name="informations-textuelles-section"/>
+        
+        <!-- 5. Références & mentions -->
+        <xsl:call-template name="references-section"/>
+        
+        <!-- 6. Production scénique -->
+        <xsl:call-template name="production-scenique-section"/>
+        
+        <!-- 7. Dates & lieux -->
+        <xsl:call-template name="dates-lieux-section"/>
+        
+        <!-- 8. Liturgie -->
+        <xsl:call-template name="liturgie-section"/>
+        
+        <!-- 9. Personnages, rôles, noms -->
+        <xsl:call-template name="roles-personnages-section"/>
+        
+        <!-- 10. Notes et attributions -->
+        <xsl:call-template name="notes-attributions-section"/>
+        
+        <!-- 11. Responsable de la saisie -->
+        <xsl:call-template name="auteur-saisie-section"/>
+        
+    </xsl:template>
+
+    <!-- 1. Section Incipits -->
+    <xsl:template name="incipits-section">
+        <xsl:if test="inc_fr or inc_lat or inc_mus">
+            <xsl:variable name="incipitContent">
+                <xsl:if test="inc_fr">
+                    <div class="field">
+                        <strong>Incipit français : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="inc_fr"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="inc_lat">
+                    <div class="field">
+                        <strong>Incipit latin : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="inc_lat"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="inc_mus">
+                    <div class="field">
+                        <strong>Incipit musical : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="inc_mus"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Incipit'"/>
+                <xsl:with-param name="content" select="$incipitContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 2. Section Effectif et instrumentation -->
+    <xsl:template name="effectif-section">
+        <xsl:if test="effectif or effectif_not or instr">
+            <xsl:variable name="effectContent">
+                <div class="field">
+                    <strong>Effectif musical : </strong>
+                    <xsl:choose>
+                        <xsl:when test="effectif">
+                            <span><xsl:value-of select="effectif"/></span>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <span>Non renseigné</span>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </div>
+                
+                <xsl:if test="effectif_not">
+                    <div class="field">
+                        <strong>Note sur l'effectif : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="effectif_not"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <div class="field">
+                    <strong>Instrumentation : </strong>
+                    <xsl:choose>
+                        <xsl:when test="instr">
+                            <span><xsl:value-of select="instr"/></span>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <span>Non renseignée</span>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </div>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Effectif et instrumentation'"/>
+                <xsl:with-param name="content" select="$effectContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 3. Section Sources -->
+    <xsl:template name="sources-section">
+        <xsl:if test="srce_A or srce_alt or srce_chore or cote_srce or srce_code or srce_type or srce_notes or srce_dep or srce_texte or comparaison">
+            <xsl:variable name="sourcesContent">
+                <xsl:if test="srce_A">
+                    <div class="field">
+                        <strong>Source A : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_A"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="srce_alt">
+                    <div class="field">
+                        <strong>Autres sources : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_alt"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="srce_chore">
+                    <div class="field">
+                        <strong>Source chorégraphique : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_chore"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="cote_srce">
+                    <div class="field">
+                        <strong>Cote source : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="cote_srce"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="srce_code">
+                    <div class="field">
+                        <strong>Code source : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_code"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="srce_type">
+                    <div class="field">
+                        <strong>Type de source : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_type"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="srce_notes">
+                    <div class="field work-text">
+                        <strong>Notes sur la source : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_notes"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="srce_dep">
+                    <div class="field work-text">
+                        <strong>Dépouillement : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_dep"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="srce_texte">
+                    <div class="field">
+                        <strong>Description de la source : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="srce_texte"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="comparaison">
+                    <div class="field">
+                        <strong>Comparaison sources : </strong>
+                        <span><xsl:value-of select="comparaison"/></span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Source(s)'"/>
+                <xsl:with-param name="content" select="$sourcesContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 4. Section Informations textuelles -->
+    <xsl:template name="informations-textuelles-section">
+        <xsl:if test="texte_not or traduc or argument or comm">
+            <xsl:variable name="texteInfoContent">
+                <xsl:if test="texte_not">
+                    <div class="field work-text">
+                        <strong>Note sur le texte : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="texte_not"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="traduc">
+                    <div class="field">
+                        <strong>Traduction : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="traduc"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="argument">
+                    <div class="field work-text">
+                        <strong>Argument : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="argument"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="comm">
+                    <div class="field work-text">
+                        <strong>Commentaires contemporains : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="comm"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Informations sur le texte'"/>
+                <xsl:with-param name="content" select="$texteInfoContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 5. Section Références & mentions -->
+    <xsl:template name="references-section">
+        <xsl:if test="ref_bibl or notice_bibl or voir_aussi or ed_moderne or disco or catal or oeuv_par">
+            <xsl:variable name="referencesContent">
+                <xsl:if test="ref_bibl">
+                    <div class="field">
+                        <strong>Référence bibliographique : </strong>
+                        <span><xsl:value-of select="ref_bibl"/></span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="notice_bibl">
+                    <div class="field">
+                        <strong>Notice bibliographique : </strong>
+                        <xsl:call-template name="format-notice-ligne">
+                            <xsl:with-param name="texte" select="notice_bibl"/>
+                        </xsl:call-template>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="voir_aussi">
+                    <div class="field">
+                        <strong>Voir aussi : </strong>
+                        <span><xsl:value-of select="voir_aussi"/></span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="ed_moderne">
+                    <div class="field">
+                        <strong>Édition moderne : </strong>
+                        <span><xsl:value-of select="ed_moderne"/></span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="disco">
+                    <div class="field">
+                        <strong>Discographie : </strong>
+                        <span><xsl:value-of select="disco"/></span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="catal">
+                    <div class="field">
+                        <strong>Catalogue cité : </strong>
+                        <span><xsl:value-of select="catal"/></span>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="oeuv_par">
+                    <div class="field">
+                        <strong>Œuvre parodié : </strong>
+                        <span><xsl:value-of select="oeuv_par"/></span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Références et catalogues'"/>
+                <xsl:with-param name="content" select="$referencesContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 6. Section Production scénique -->
+    <xsl:template name="production-scenique-section">
+        <xsl:if test="costume or decor or evnt">
+            <xsl:variable name="productionContent">
+                <xsl:if test="costume">
+                    <div class="field">
+                        <strong>Costumes : </strong>
+                        <span><xsl:value-of select="costume"/></span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="decor">
+                    <div class="field">
+                        <strong>Décor : </strong>
+                        <span><xsl:value-of select="decor"/></span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="evnt">
+                    <div class="field">
+                        <strong>Événement : </strong>
+                        <span><xsl:value-of select="evnt"/></span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Production scénique'"/>
+                <xsl:with-param name="content" select="$productionContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 7. Section Dates & lieux -->
+    <xsl:template name="dates-lieux-section">
+        <xsl:if test="date_citee or date_notes or lieu_cite or lieu_notes">
+            <xsl:variable name="datesLieuxContent">
+                
+                <xsl:if test="date_notes">
+                    <div class="field">
+                        <strong>Note sur les dates : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="date_notes"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="lieu_cite">
+                    <div class="field">
+                        <strong>Lieu cité : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="lieu_cite"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="lieu_notes">
+                    <div class="field">
+                        <strong>Notes sur le lieu : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="lieu_notes"/>
+                            </xsl:call-template>
+                        </span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Dates et lieux'"/>
+                <xsl:with-param name="content" select="$datesLieuxContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 8. Section Liturgie -->
+    <xsl:template name="liturgie-section">
+        <xsl:if test="liturg or liturg_notes">
+            <xsl:variable name="liturgieContent">
+                <xsl:if test="liturg">
+                    <div class="field">
+                        <strong>Occasion liturgique : </strong>
+                        <span><xsl:value-of select="liturg"/></span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="liturg_notes">
+                    <div class="field">
+                        <strong>Notes sur la liturgie : </strong>
+                        <span><xsl:value-of select="liturg_notes"/></span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Liturgie'"/>
+                <xsl:with-param name="content" select="$liturgieContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 9. Section Personnages, rôles, noms -->
+    <xsl:template name="roles-personnages-section">
+        <xsl:if test="role_cite or role_notes or nom_cite or nom_notes">
+            <xsl:variable name="rolesContent">
+                <xsl:if test="role_cite">
+                    <div class="field">
+                        <strong>Rôle(s) cité(s) : </strong>
+                        <span><xsl:value-of select="role_cite"/></span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="role_notes">
+                    <div class="field">
+                        <strong>Notes sur le ou les rôles : </strong>
+                        <span><xsl:value-of select="role_notes"/></span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="nom_cite">
+                    <div class="field">
+                        <strong>Noms cités : </strong>
+                        <span><xsl:value-of select="nom_cite"/></span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="nom_notes">
+                    <div class="field">
+                        <strong>Note sur les noms cités : </strong>
+                        <span><xsl:value-of select="nom_notes"/></span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Rôles et personnages'"/>
+                <xsl:with-param name="content" select="$rolesContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 10. Section Notes et attributions -->
+    <xsl:template name="notes-attributions-section">
+        <xsl:if test="notes or notes_attrib">
+            <xsl:variable name="notesContent">
+                <xsl:if test="notes">
+                    <div class="field">
+                        <strong>Notes et références : </strong>
+                        <span><xsl:value-of select="notes"/></span>
+                    </div>
+                </xsl:if>
+                
+                <xsl:if test="notes_attrib">
+                    <div class="field">
+                        <strong>Notes sur l'attribution : </strong>
+                        <span><xsl:value-of select="notes_attrib"/></span>
+                    </div>
+                </xsl:if>
+            </xsl:variable>
+
+            <xsl:call-template name="accordeon">
+                <xsl:with-param name="title" select="'Notes et attributions'"/>
+                <xsl:with-param name="content" select="$notesContent/node()"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- 11. Section Responsable de la saisie -->
+    <xsl:template name="auteur-saisie-section">
+        <xsl:if test="aut_saisie">
+            <div class="field">
+                <strong>Auteur de la saisie : </strong>
+                <span><xsl:value-of select="aut_saisie"/></span>
+            </div>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="liste-fragments-oeuvre">
+        <xsl:if test="a_pour_fragments">
+            <div class="fragments-liste">
+                <h3>Fragments de cette œuvre :</h3>
+                <ul>
+                    <xsl:variable name="doc-root" select="/"/>
+                    <xsl:variable name="projet-courant" select="projet"/>
+                    <xsl:variable name="fragments-ids" select="tokenize(a_pour_fragments, ' - ')"/>
+
+                    <xsl:for-each select="$fragments-ids[position() &gt; 1]">
+                        <xsl:variable name="fragment-number" select="normalize-space(.)"/>
+                        <xsl:variable name="fragment-number-padded" select="format-number(number($fragment-number), '00000')"/>
+
+                        <xsl:for-each select="$doc-root//item[projet = $projet-courant and nature = 'Fragment']">
+                            <xsl:variable name="num-orig-fragment" select="num_orig"/>
+                            <xsl:variable name="last-five-digits" select="substring($num-orig-fragment, string-length($num-orig-fragment) - 4)"/>
+
+                            <xsl:if test="$last-five-digits = $fragment-number-padded">
+                                <li>
+                                    <a href="../fragments/{numero}.html">
+                                        <xsl:value-of select="frag"/>
+                                    </a>
+                                </li>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </xsl:for-each>
+                </ul>
+            </div>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="oeuvre-parente-fragment">
+        <xsl:if test="fragment_de">
+            <div class="oeuvre-parente">
+                <h3>Œuvre parente :</h3>
+                
+                <xsl:variable name="doc-root" select="/"/>
+                <xsl:variable name="projet-courant" select="projet"/>
+                <xsl:variable name="oeuvre-id" select="normalize-space(fragment_de)"/>
+                <xsl:variable name="oeuvre-number" select="substring-after($oeuvre-id, concat($projet-courant, ' - '))"/>
+                <xsl:variable name="oeuvre-number-padded" select="format-number(number($oeuvre-number), '00000')"/>
+
+                <xsl:for-each select="$doc-root//item[projet = $projet-courant and nature = 'Oeuvre']">
+                    <xsl:variable name="num-orig-oeuvre" select="num_orig"/>
+                    <xsl:variable name="last-five-digits" select="substring($num-orig-oeuvre, string-length($num-orig-oeuvre) - 4)"/>
+
+                    <xsl:if test="$last-five-digits = $oeuvre-number-padded">
+                        <p>
+                            <a href="../works/{numero}.html">
+                                <xsl:value-of select="oeuvre"/>
+                            </a>
+                        </p>
+                    </xsl:if>
+                </xsl:for-each>
+            </div>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="accordeon">
+        <xsl:param name="title"/>
+        <xsl:param name="content"/>
+
+        <div class="accordeon">
+            <div class="header">
+            <h3><xsl:value-of select="$title"/></h3>
+            <span class="separator"></span>
+            <span class="chevron">›</span>
+            </div>
+            <div class="content">
+            <xsl:copy-of select="$content"/>
+            </div>
+        </div>
+    </xsl:template>
+
+    <xsl:template name="format-notice-ligne">
+        <xsl:param name="texte"/>
+        <!-- On remplace les slashs typographiques avec point médian -->
+        <xsl:variable name="adoucit" select="replace($texte, ' / ', ' · ')"/>
+        <xsl:value-of select="normalize-space($adoucit)"/>
+    </xsl:template>
+
     <xsl:template name="format-with-br">
         <xsl:param name="text"/>
         <xsl:choose>
-            <xsl:when test="contains($text, '&#10;')">
-                <xsl:value-of select="substring-before($text, '&#10;')"/>
+            <!-- Gestion CRLF -->
+            <xsl:when test="contains($text, '&#xD;&#xA;')">
+                <xsl:value-of select="substring-before($text, '&#xD;&#xA;')"/>
                 <br/>
                 <xsl:call-template name="format-with-br">
-                    <xsl:with-param name="text" select="substring-after($text, '&#10;')"/>
+                    <xsl:with-param name="text" select="substring-after($text, '&#xD;&#xA;')"/>
                 </xsl:call-template>
             </xsl:when>
+            <!-- Gestion CR -->
+            <xsl:when test="contains($text, '&#xD;')">
+                <xsl:value-of select="substring-before($text, '&#xD;')"/>
+                <br/>
+                <xsl:call-template name="format-with-br">
+                    <xsl:with-param name="text" select="substring-after($text, '&#xD;')"/>
+                </xsl:call-template>
+            </xsl:when>
+            <!-- Gestion LF -->
+            <xsl:when test="contains($text, '&#xA;')">
+                <xsl:value-of select="substring-before($text, '&#xA;')"/>
+                <br/>
+                <xsl:call-template name="format-with-br">
+                    <xsl:with-param name="text" select="substring-after($text, '&#xA;')"/>
+                </xsl:call-template>
+            </xsl:when>
+            <!-- Balises br textuelles -->
             <xsl:when test="contains($text, '&lt;br/&gt;')">
                 <xsl:value-of select="substring-before($text, '&lt;br/&gt;')" disable-output-escaping="yes"/>
                 <br/>
@@ -44,14 +1116,16 @@
                     <xsl:with-param name="text" select="substring-after($text, '&lt;br/&gt;')"/>
                 </xsl:call-template>
             </xsl:when>
+            <!-- Fin -->
             <xsl:otherwise>
                 <xsl:value-of select="$text"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template name="logo">
-        <a href="https://cmbv.fr/fr/ressources/ressources-numeriques">
+    <!-- Template pour le logo animé du CMBV -->
+    <xsl:template name="cmbv-logo">
+        <a href="https://cmbv.fr/fr/ressources/ressources-numeriques" title="CMBV - Ressources numériques">
             <div class="logo">                
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" id="svg-logo-animation" class="svg-logo-animation logo-loaded">
                         <mask id="myClip">
@@ -85,4 +1159,5 @@
             </div>
         </a>
     </xsl:template>
+
 </xsl:stylesheet>

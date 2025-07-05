@@ -1,4 +1,5 @@
 import os
+import html
 import tempfile
 import zipfile
 import time
@@ -8,6 +9,8 @@ from typing import Optional, Dict, Any
 
 from PySide6.QtCore import QThread, Signal
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # ← va à la racine du projet
+STATICS_PATH = os.path.join(BASE_DIR, "resources", "statics")
 
 class XSLTTransformationEngine:
     """Classe backend pour gérer les transformations XSLT avec Saxon"""
@@ -15,6 +18,16 @@ class XSLTTransformationEngine:
     def __init__(self):
         self.temp_dir = tempfile.mkdtemp()
         self.transformations: Dict[str, Dict[str, Any]] = {}
+
+    def decode_html_entities(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Double décodage pour gérer les &amp;#xE9; → &#xE9; → é
+        decoded = html.unescape(html.unescape(content))
+
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(decoded)
     
     def transform(self, xml_file_path: str, xslt_file_path: str) -> Dict[str, Any]:
         """
@@ -94,13 +107,28 @@ class XSLTTransformationEngine:
             # Créer un fichier zip avec tous les fichiers générés
             zip_filename = f"transformation_results_{transform_id[:8]}.zip"
             zip_path = os.path.join(transform_dir, zip_filename)
+
+            for root, dirs, files in os.walk(output_dir):
+                for file in files:
+                    self.decode_html_entities(os.path.join(root, file))
+
             
             with zipfile.ZipFile(zip_path, 'w') as zipf:
+                # Ajouter tous les fichiers de output_dir
                 for root, dirs, files in os.walk(output_dir):
                     for file in files:
                         file_path = os.path.join(root, file)
                         arcname = os.path.relpath(file_path, output_dir)
                         zipf.write(file_path, arcname)
+
+                # Ajouter le dossier statics dans output/
+                if os.path.exists(STATICS_PATH):
+                    for root, dirs, files in os.walk(STATICS_PATH):
+                        for file in files:
+                            abs_path = os.path.join(root, file)
+                            rel_path = os.path.relpath(abs_path, STATICS_PATH)
+                            zipf.write(abs_path, arcname=os.path.join("output", "statics", rel_path))
+
             
             # Stocker les informations
             files = [f for f in os.listdir(output_dir) if os.path.isfile(os.path.join(output_dir, f))]
