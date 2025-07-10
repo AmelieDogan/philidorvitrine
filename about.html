@@ -3,7 +3,7 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <title>CMBV - Philidor Vitrine</title>
-      <link rel="stylesheet" type="text/css" href="statics/css/styles.css"><script type="text/javascript" src="statics/js/logo.js"></script><script type="text/javascript" src="statics/js/main.js"></script></head>
+      <link rel="stylesheet" type="text/css" href="statics/css/styles.css"><script type="text/javascript" src="statics/js/main.js"></script><script type="text/javascript" src="statics/js/logo.js"></script></head>
    <body>
       <header><a href="https://cmbv.fr/fr/ressources/ressources-numeriques" title="CMBV - Ressources numériques">
             <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" id="svg-logo-animation" class="svg-logo-animation logo-loaded">
@@ -87,58 +87,97 @@
       </header>
       <figure class="bandeau-box"><img class="bandeau" src="statics/img/recherche-cmbv-accueil.jpg"></figure>
       <main>
-         <section class="white-box"><h2>À propos de l’édition numérique de PHILIDOR4</h2>
-            <p>Ce site est une <strong>vitrine éditorialisée</strong> de la base
-            de données <strong>PHILIDOR4</strong>, développée par le <em>Centre
-            de Musique Baroque de Versailles (CMBV)</em>. Il a été conçu
-            comme une interface alternative et complémentaire, à destination d’un
-            public plus large que celui des chercheurs spécialisés.</p>
-            <p>Cette édition vise à rendre plus accessibles les données scientifiques
-            issues des travaux menés depuis 1996 par le pôle recherche du CMBV, autour
-            de la musique et des arts du spectacle en France aux XVII<sup>e</sup> et XVIII<sup>e</sup>
-            siècles. Une sélection de bases de données a été
-            organisée selon une logique thématique et présentée « <em>à
-            la manière d’un catalogue</em> », permettant une lecture progressive
-            et contextualisée.</p>
-            <h3>Conception et réalisation</h3>
-            <p>Le projet <strong data-start="258" data-end="277">PhilidorVitrine</strong> est
-            porté par le CMBV, en particulier par <strong data-start="336" data-end="352">Amélie
-            Dogan</strong>, stagiaire au sein de la Bibliothèque du centre dans le cadre
-            de sa deuxième année de master « Technologies numériques
-            appliquées à l’histoire » à l’École
-            nationale des chartes. Réalisé en collaboration avec le pôle recherche,
-            ce projet repose sur une chaîne de production complète qui transforme
-            les données XML issues de PHILIDOR4 en un site HTML statique.</p>
-            <p>L’ensemble du logiciel — incluant l’interface graphique en Python,
-            la structure de traitement des données et la feuille de transformation XSLT
-            — a été conçu et développé par Amélie
-            Dogan spécifiquement pour cette édition.</p>
-            <ul>
-            <li><strong>Interface utilisateur :</strong> application Python + PySide6</li>
-            <li><strong>Transformation :</strong> XSLT via la bibliothèque Saxon/CHE</li>
-            <li><strong>Structure finale :</strong> HTML statique conforme à la charte
-            graphique du CMBV</li>
+         <section class="white-box"><h2 data-start="366" data-end="420">À propos de cette édition numérique
+            de PHILIDOR4</h2>
+            <h3 data-start="422" data-end="465">Une interface éditoriale complémentaire</h3>
+            <p data-start="467" data-end="817">Ce site constitue une <strong data-start="489"
+            data-end="514">vitrine éditorialisée</strong> de la base de données
+            <strong data-start="537" data-end="550">PHILIDOR4</strong>, développée
+            par le <strong data-start="570" data-end="620">Centre de Musique Baroque de Versailles
+            (CMBV)</strong>. Il a été conçu comme une <strong data-start="647"
+            data-end="690">interface alternative et complémentaire</strong>, destinée
+            à <strong data-start="703" data-end="722">élargir l’accès</strong>
+            aux données scientifiques produites par le pôle recherche du centre depuis
+            près de trente ans.</p>
+            <p data-start="819" data-end="1184">L’objectif est de proposer une <strong data-start="850"
+            data-end="896">mise en forme contextualisée et structurée</strong> de
+            contenus sélectionnés, suivant une organisation <strong data-start="948"
+            data-end="962">par projet</strong> (compositeur ou corpus). Présentée
+            « <strong data-start="1000" data-end="1040">à la manière d’un
+            catalogue raisonné</strong> », cette édition permet une <strong
+            data-start="1069" data-end="1092">lecture progressive</strong> et une <strong data-start="1100"
+            data-end="1124">navigation facilitée</strong> au sein d’un ensemble de
+            données historiquement dispersées.</p>
+            <h3 data-start="1191" data-end="1230">Conception et réalisation technique</h3>
+            <p data-start="1232" data-end="1514">Le projet <strong data-start="1242" data-end="1261">PhilidorVitrine</strong>
+            a été mené au sein du CMBV par <strong data-start="1293" data-end="1309">Amélie
+            Dogan</strong>, stagiaire en deuxième année du master <strong data-start="1349"
+            data-end="1400">Technologies numériques appliquées à l’histoire</strong>
+            (École nationale des chartes), en collaboration avec les équipes de
+            la <strong data-start="1472" data-end="1488">Bibliothèque</strong> et du <strong
+            data-start="1495" data-end="1513">pôle recherche</strong>.</p>
+            <p data-start="1516" data-end="1645">Il repose sur une <strong data-start="1534" data-end="1567">chaîne
+            de production complète</strong>, pensée pour allier <strong data-start="1588"
+            data-end="1643">automatisation, soutenabilité et simplicité d’usage</strong>
+            :</p>
+            <ul data-start="1647" data-end="2124">
+            <li data-start="1647" data-end="1806">
+            <p data-start="1649" data-end="1806"><strong data-start="1649" data-end="1684">Interface
+            de gestion éditoriale</strong> : application Python avec PySide6, permettant
+            la modification des contenus d’introduction et de structuration par projet.</p>
+            </li>
+            <li data-start="1807" data-end="1982">
+            <p data-start="1809" data-end="1982"><strong data-start="1809" data-end="1839">Transformation
+            des données</strong> : à partir des exports XML de PHILIDOR4, une feuille
+            de style <strong data-start="1902" data-end="1910">XSLT</strong> (exécutée
+            via <strong data-start="1925" data-end="1938">Saxon/CHE</strong>) produit automatiquement
+            les fichiers HTML.</p>
+            </li>
+            <li data-start="1983" data-end="2124">
+            <p data-start="1985" data-end="2124"><strong data-start="1985" data-end="2005">Structure
+            finale</strong> : site web <strong data-start="2017" data-end="2043">statique (HTML/CSS/JS)</strong>,
+            léger, rapide, conforme à la charte graphique du CMBV, publié
+            via GitHub Pages.</p>
+            </li>
             </ul>
-            <p>Le logiciel permet de compléter les contenus éditoriaux, de charger
-            les données XML extraites de PHILIDOR4, et de générer automatiquement
-            une archive contenant le site web prêt à être mis en ligne.</p>
-            <h3>Public visé</h3>
-            <p>Cette édition numérique s’adresse :</p>
-            <ul>
-            <li>aux <strong>chercheurs</strong> en musicologie, lettres, histoire et arts du spectacle,</li>
-            <li>aux <strong>musiciens et enseignants</strong> souhaitant explorer les répertoires
-            baroques,</li>
-            <li>aux <strong>amateurs éclairés</strong> ou curieux de découvrir
-            les œuvres et sources de cette époque.</li>
+            <p data-start="2126" data-end="2311">Ce système permet une <strong data-start="2148"
+            data-end="2170">mise à jour simple</strong>, une <strong data-start="2176"
+            data-end="2200">maintenabilité forte</strong>, et une <strong data-start="2209"
+            data-end="2252">diffusion à faible empreinte écologique</strong>, dans
+            l’esprit des <strong data-start="2272" data-end="2310">bonnes pratiques du web
+            soutenable</strong>.</p>
+            <h3 data-start="2318" data-end="2333">Public visé</h3>
+            <p data-start="2335" data-end="2447">Cette édition s’adresse à
+            un <strong data-start="2364" data-end="2381">public élargi</strong>, en complément
+            des outils de recherche spécialisés de PHILIDOR4 :</p>
+            <ul data-start="2449" data-end="2766">
+            <li data-start="2449" data-end="2525">
+            <p data-start="2451" data-end="2525"><strong data-start="2451" data-end="2465">Chercheurs</strong>
+            en musicologie, histoire, littérature ou arts du spectacle,</p>
+            </li>
+            <li data-start="2526" data-end="2625">
+            <p data-start="2528" data-end="2625"><strong data-start="2528" data-end="2541">Musiciens</strong>,
+            interprètes, pédagogues et étudiants souhaitant explorer les
+            répertoires baroques,</p>
+            </li>
+            <li data-start="2626" data-end="2766">
+            <p data-start="2628" data-end="2766"><strong data-start="2628" data-end="2658">Curieux,
+            amateurs éclairés</strong>, usagers occasionnels à la recherche
+            d’un accès guidé aux œuvres et sources du patrimoine musical
+            français.</p>
+            </li>
             </ul>
-            <p> </p>
-            <h3>Remerciements</h3>
-            <p>Ce projet n’aurait pu voir le jour sans l’implication des équipes
-            du CMBV ayant contribué à la structuration et à l’enrichissement
-            de la base PHILIDOR depuis près de trois décennies. Qu’ils en
-            soient chaleureusement remerciés.</p>
-            <p>Pour toute remarque ou question, vous pouvez nous contacter à l’adresse
-            suivante : <a href="mailto:bibliotheque@cmbv.com">bibliotheque@cmbv.com</a>.</p></section>
+            <h3 data-start="2773" data-end="2790">Remerciements</h3>
+            <p data-start="2792" data-end="3120">Ce projet n’aurait pu voir le jour sans
+            le <strong data-start="2835" data-end="2854">travail continu</strong> des équipes
+            du CMBV, ayant contribué depuis les années 1990 à la <strong
+            data-start="2920" data-end="2969">constitution, structuration et enrichissement</strong>
+            de la base PHILIDOR. Leur rigueur et leur engagement sont ici <strong data-start="3032"
+            data-end="3073">mis en lumière dans un format nouveau</strong> : qu’ils
+            soient ici chaleureusement remerciés.</p>
+            <p data-start="3122" data-end="3233"><strong data-start="3125" data-end="3136">Contact</strong>
+            : pour toute question ou retour, écrivez à <a class="cursor-pointer"
+            rel="noopener" data-start="3180" data-end="3233">bibliotheque@cmbv.com</a></p></section>
       </main>
       <footer>
          <p><a href="legal_mentions.html">Mentions légales</a></p>
