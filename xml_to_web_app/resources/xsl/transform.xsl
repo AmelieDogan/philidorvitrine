@@ -36,8 +36,6 @@
         </xsl:for-each>
     </xsl:template>
 
-    <!-- Templates factorisés pour les éléments communs -->
-
     <!-- Template pour générer le <head> commun -->
     <xsl:template name="common-head">
         <xsl:param name="page-path" select="''"/>
@@ -45,6 +43,7 @@
             <meta charset="UTF-8"/>
             <title>CMBV - <xsl:value-of select="$edition-title"/></title>
             <link rel="stylesheet" type="text/css" href="{$page-path}statics/css/styles.css"/>
+            <script type="text/javascript" src="{$page-path}statics/js/main.js"></script>
             <script type="text/javascript" src="{$page-path}statics/js/logo.js"></script>
         </head>
     </xsl:template>
@@ -61,7 +60,7 @@
         </header>
     </xsl:template>
 
-    <!-- Template pour générer le bandeau (optionnel) -->
+    <!-- Template pour générer le bandeau -->
     <xsl:template name="common-bandeau">
         <xsl:param name="page-path" select="''"/>
         <figure class="bandeau-box">
@@ -197,6 +196,7 @@
     <!-- Template pour la page de presentation de chaque projet -->
     <xsl:template name="create-project-page">
         <xsl:param name="project"/>
+
         <xsl:result-document href="output/projects/{translate($project, ' ', '_')}.html" method="html">
             <html>
                 <xsl:call-template name="common-head">
@@ -206,29 +206,145 @@
                     <xsl:call-template name="common-header">
                         <xsl:with-param name="page-path" select="'../'"/>
                     </xsl:call-template>
-                    
+
                     <xsl:call-template name="common-bandeau">
                         <xsl:with-param name="page-path" select="'../'"/>
                     </xsl:call-template>
-                    
-                    <main>
-                        <!-- Contenu spécifique de la page projet -->
+
+                    <main class="main-content">
                         <section class="white-box">
-                            <h2><xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/></h2>
-                            <div>
+
+                            <!-- Variables locales -->
+                            <xsl:variable name="project-sources" select="//item[projet = $project and nature = 'Source']"/>
+                            <xsl:variable name="project-oeuvres" select="//item[projet = $project and nature = 'Oeuvre' and not(frag)]"/>
+
+                            <!-- Titre principal -->
+                            <h2 id="project-title">
+                                <xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/>
+                            </h2>
+
+                            <!-- Aperçu éditorial -->
+                            <div class="preview-box">
                                 <xsl:value-of select="//projects_data//project[@id = current()/projet]/preview/node()"/>
-                                <p><a href="#full-description">Lire la suite</a></p>
+                                <p><a class="btn" href="#full-description">Lire la suite</a></p>
                             </div>
 
-                            <h3>Liste des recueils</h3>
+                            <!-- Catalogue des recueils -->
+                            <xsl:if test="count($project-sources) &gt; 0">
+                                <div class="recueil-content">
+                                    <h3 id="recueil-section">Catalogue des recueils</h3>
+                                    <p>Sélectionnez un recueil pour voir sa notice</p>
+                                    <ul>
+                                        <xsl:for-each select="$project-sources">
+                                            <xsl:sort select="srce_code"/>
+                                            <li>
+                                                <a href="../sources/{numero}.html">
+                                                    <xsl:choose>
+                                                        <xsl:when test="titre_cle_sre">
+                                                            <xsl:value-of select="titre_cle_sre"/>
+                                                        </xsl:when>
+                                                        <xsl:when test="titre_cle">
+                                                            <xsl:value-of select="titre_cle"/>
+                                                        </xsl:when>
+                                                        <xsl:when test="notice_bibl">
+                                                            <xsl:call-template name="format-notice-ligne">
+                                                                <xsl:with-param name="texte" select="notice_bibl"/>
+                                                            </xsl:call-template>
+                                                        </xsl:when>
+                                                        <xsl:when test="srce_notes">
+                                                            <xsl:call-template name="format-notice-ligne">
+                                                                <xsl:with-param name="texte" select="srce_notes"/>
+                                                            </xsl:call-template>
+                                                        </xsl:when>
+                                                        <xsl:otherwise>
+                                                            <em>Titre non spécifié</em>
+                                                        </xsl:otherwise>
+                                                    </xsl:choose>
+                                                </a>
+                                            </li>
+                                        </xsl:for-each>
+                                    </ul>
+                                </div>
+                            </xsl:if>
+
+                            <!-- Catalogue des œuvres -->
+                            <div class="work-list">
+                                <h3 id="oeuvre-section">Catalogue des œuvres</h3>
+                                <p>Sélectionnez une œuvre pour voir sa notice</p>
+                                <ul>
+                                    <xsl:for-each select="$project-oeuvres">
+                                        <xsl:sort select="srce_code"/>
+                                        <li>
+                                            <a href="../works/{numero}.html">
+                                                <xsl:choose>
+                                                    <xsl:when test="oeuvre != ''">
+                                                        <xsl:call-template name="format-notice-ligne">
+                                                            <xsl:with-param name="texte" select="oeuvre"/>
+                                                        </xsl:call-template>
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                        <em>Titre non spécifié</em>
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
+                                            </a>
+                                            <xsl:if test="effectif"> (<xsl:value-of select="effectif"/>) </xsl:if>
+                                        </li>
+                                    </xsl:for-each>
+                                </ul>
+                            </div>
+
+                            <!-- Description longue -->
+                            <div class="project-description">
+                                <h3 id="full-description">Description du projet : 
+                                    <xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/>
+                                </h3>
+                                <xsl:value-of select="//projects_data//project[@id = current()/projet]/description_html/node()"/>
+                            </div>
+                        </section>
+
+                        <!-- Sommaire -->
+                        <section class="blue-box">
+                            <h3>Sommaire de la page</h3>
                             <ul>
-                            <xsl:for-each select="//item[nature = 'Source']">
-                                <li><a href="../sources/{numero}.html">
+                                <li><a href="#project-title"><xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/></a></li>
+                                <li><a href="#recueil-section">Catalogue des recueils</a></li>
+                                <li><a href="#oeuvre-section">Catalogue des œuvres</a></li>
+                            </ul>
+                        </section>
+                    </main>
+
+                    <xsl:call-template name="common-footer">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                </body>
+            </html>
+        </xsl:result-document>
+    </xsl:template>
+
+    <xsl:template name="create-source-page">
+        <xsl:if test="string-length(normalize-space(numero)) > 0">
+            <xsl:result-document href="output/sources/{numero}.html" method="html">
+                <html>
+                    <xsl:call-template name="common-head">
+                        <xsl:with-param name="page-path" select="'../'"/>
+                    </xsl:call-template>
+                    <body>
+                        <xsl:call-template name="common-header">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+                        <xsl:call-template name="common-bandeau">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+
+                        <main>
+                            <article class="work-details">
+                                <xsl:call-template name="notice-num"/>
+                                <h2>
                                     <xsl:choose>
-                                        <xsl:when test="titre_cle_sre">
+                                        <xsl:when test="titre_cle_sre != ''">
                                             <xsl:value-of select="titre_cle_sre"/>
                                         </xsl:when>
-                                        <xsl:when test="titre_cle">
+                                        <xsl:when test="titre_cle != ''">
                                             <xsl:value-of select="titre_cle"/>
                                         </xsl:when>
                                         <xsl:when test="notice_bibl">
@@ -237,127 +353,132 @@
                                             </xsl:call-template>
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            Titre non renseigné
+                                            <em>Titre non spécifié</em>
                                         </xsl:otherwise>
                                     </xsl:choose>
-                                </a></li>
-                            </xsl:for-each>
-                            </ul>
-
-                            <h3>Listes des oeuvres</h3>
-
-                            <h3 id="full-description">Description du projet : <xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/></h3>
-                            <xsl:value-of select="//projects_data//project[@id = current()/projet]/description_html/node()"/>
-                        </section>
-                    </main>
-                    
-                    <xsl:call-template name="common-footer">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                </body>
-            </html>
-        </xsl:result-document>
-    </xsl:template>
-
-    <!-- Template pour les pages des sources -->
-    <xsl:template name="create-source-page">
-        <xsl:result-document href="output/sources/{numero}.html" method="html">
-            <html>
-                <xsl:call-template name="common-head">
-                    <xsl:with-param name="page-path" select="'../'"/>
-                </xsl:call-template>
-                <body>
-                    <xsl:call-template name="common-header">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                    
-                    <xsl:call-template name="common-bandeau">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                    
-                    <main>
-                        <!-- Contenu spécifique de la page projet -->
-                        <section class="white-box">
-                            <div class="fiche">
+                                </h2>
                                 <xsl:call-template name="main-informations"/>
-                            </div>
-                                <xsl:call-template name="other-informations"/>
-                        </section>
-                    </main>
-                    
-                    <xsl:call-template name="common-footer">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                </body>
-            </html>
-        </xsl:result-document>
+                            </article>
+                            <xsl:call-template name="other-informations"/>
+                        </main>
+
+                        <xsl:call-template name="common-footer">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+                    </body>
+                </html>
+            </xsl:result-document>
+        </xsl:if>
     </xsl:template>
 
-    <!-- Template pour les pages des oeuvres -->
     <xsl:template name="create-work-page">
-        <xsl:result-document href="output/works/{numero}.html" method="html">
-            <html>
-                <xsl:call-template name="common-head">
-                    <xsl:with-param name="page-path" select="'../'"/>
-                </xsl:call-template>
-                <body>
-                    <xsl:call-template name="common-header">
+        <xsl:if test="string-length(normalize-space(numero)) > 0">
+            <xsl:result-document href="output/works/{numero}.html" method="html">
+                <html>
+                    <xsl:call-template name="common-head">
                         <xsl:with-param name="page-path" select="'../'"/>
                     </xsl:call-template>
-                    
-                    <xsl:call-template name="common-bandeau">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                    
-                    <main>
-                        <section class="white-box">
-                            <div class="fiche">
+                    <body>
+                        <xsl:call-template name="common-header">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+                        <xsl:call-template name="common-bandeau">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+
+                        <main>
+                            <article class="work-details">
+                                <xsl:call-template name="notice-num"/>
+                                <h2>
+                                    <xsl:choose>
+                                        <xsl:when test="oeuvre != ''">
+                                            <xsl:value-of select="oeuvre"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <em>Titre non spécifié</em>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </h2>
                                 <xsl:call-template name="main-informations"/>
-                            </div>
-                                <xsl:call-template name="other-informations"/>
-                        </section>
-                    </main>
-                    
-                    <xsl:call-template name="common-footer">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                </body>
-            </html>
-        </xsl:result-document>
+                            </article>
+                            <xsl:call-template name="other-informations"/>
+                            <xsl:call-template name="liste-fragments-oeuvre"/>
+                        </main>
+
+                        <xsl:call-template name="common-footer">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+                    </body>
+                </html>
+            </xsl:result-document>
+        </xsl:if>
     </xsl:template>
 
     <!-- Template pour les pages des fragments -->
     <xsl:template name="create-frag-page">
-        <xsl:param name="project-id"/>
-        <xsl:result-document href="output/fragments/{numero}.html" method="html">
-            <html>
-                <xsl:call-template name="common-head">
-                    <xsl:with-param name="page-path" select="'../'"/>
-                </xsl:call-template>
-                <body>
-                    <xsl:call-template name="common-header">
+        <xsl:if test="string-length(normalize-space(numero)) > 0">
+            <xsl:result-document href="output/fragments/{numero}.html" method="html">
+                <html>
+                    <xsl:call-template name="common-head">
                         <xsl:with-param name="page-path" select="'../'"/>
                     </xsl:call-template>
-                    
-                    <xsl:call-template name="common-bandeau">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                    
-                    <main>
-                        <section class="white-box">
-                            <div class="fiche">
+                    <body>
+                        <xsl:call-template name="common-header">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+                        <xsl:call-template name="common-bandeau">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+
+                        <main>
+                            <article class="work-details">
+                                <xsl:call-template name="notice-num"/>
+                                <h2>
+                                    <xsl:choose>
+                                        <xsl:when test="frag != ''">
+                                            <xsl:value-of select="frag"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <em>Titre non spécifié</em>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </h2>
                                 <xsl:call-template name="main-informations"/>
-                            </div>
-                                <xsl:call-template name="other-informations"/>
-                        </section>
-                    </main>
-                    
-                    <xsl:call-template name="common-footer">
-                        <xsl:with-param name="page-path" select="'../'"/>
-                    </xsl:call-template>
-                </body>
-            </html>
-        </xsl:result-document>
+                            </article>
+                            <xsl:call-template name="other-informations"/>
+                            <xsl:call-template name="oeuvre-parente-fragment"/>
+                        </main>
+
+                        <xsl:call-template name="common-footer">
+                            <xsl:with-param name="page-path" select="'../'"/>
+                        </xsl:call-template>
+                    </body>
+                </html>
+            </xsl:result-document>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="notice-num">
+        <div class="notice-num">
+            <p class="num">
+                <strong>
+                    <xsl:if test="nature">
+                        <xsl:value-of select="nature"/>
+                    </xsl:if>
+                    <xsl:if test="numero">
+                        <span>, notice n°</span>
+                        <xsl:value-of select="numero"/>
+                    </xsl:if>
+                </strong>
+            </p>
+            
+            <xsl:if test="num_orig">
+                <p class="num-orig">
+                    <strong>Numéro d'origine (JLB ou EZPUBLISH) : </strong>
+                    <span><xsl:value-of select="num_orig"/></span>
+                </p>
+            </xsl:if>
+        </div>
     </xsl:template>
 
     <xsl:template name="main-informations">
@@ -904,8 +1025,12 @@
             <xsl:variable name="liturgieContent">
                 <xsl:if test="liturg">
                     <div class="field">
-                        <strong>Occasion liturgique : </strong>
-                        <span><xsl:value-of select="liturg"/></span>
+                        <strong>Occasion liturgique : </strong><br/>
+                        <span>
+                            <xsl:call-template name="format-with-br">
+                                <xsl:with-param name="text" select="liturg"/>
+                            </xsl:call-template>
+                        </span>
                     </div>
                 </xsl:if>
                 
@@ -1076,10 +1201,22 @@
 
     <xsl:template name="format-notice-ligne">
         <xsl:param name="texte"/>
-        <!-- On remplace les slashs typographiques avec point médian -->
-        <xsl:variable name="adoucit" select="replace($texte, ' / ', ' · ')"/>
-        <xsl:value-of select="normalize-space($adoucit)"/>
+
+        <!-- 1. Tronquer à la première double ligne vide (deux retours à la ligne consécutifs) -->
+        <xsl:variable name="tronque" select="replace($texte, '([\r\n]+){2,}.*$', '')"/>
+
+        <!-- 2. Remplacer les slashs typographiques " / " par · -->
+        <xsl:variable name="remplace-slash" select="replace($tronque, ' / ', ' · ')"/>
+
+        <!-- 3. Remplacer les retours à la ligne restants par · -->
+        <xsl:variable name="remplace-retours" select="replace($remplace-slash, '[&#xD;&#xA;]+', ' · ')"/>
+
+        <!-- 4. Nettoyer les · successifs et espaces inutiles -->
+        <xsl:variable name="nettoye" select="replace(normalize-space($remplace-retours), '· +', '· ')"/>
+
+        <xsl:value-of select="$nettoye"/>
     </xsl:template>
+
 
     <xsl:template name="format-with-br">
         <xsl:param name="text"/>

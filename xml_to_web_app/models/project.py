@@ -133,7 +133,8 @@ class Project:
         updated_at = parse_datetime_safe(updated_str)
         
         # Récupère le contenu HTML
-        description_html = element.text or ""
+        description_html_elem = element.find("description_html")
+        description_html = description_html_elem.text if description_html_elem is not None else ""
         
         return cls(
             uuid=uuid_str or str(uuid.uuid4()),
