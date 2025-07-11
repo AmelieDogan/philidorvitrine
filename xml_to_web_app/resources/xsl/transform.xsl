@@ -1203,20 +1203,40 @@
         <xsl:param name="texte"/>
 
         <!-- 1. Tronquer à la première double ligne vide (deux retours à la ligne consécutifs) -->
-        <xsl:variable name="tronque" select="replace($texte, '([\r\n]+){2,}.*$', '')"/>
+        <xsl:variable name="tronque">
+            <xsl:choose>
+                <xsl:when test="contains($texte, '&#xD;&#xA;&#xD;&#xA;')">
+                    <xsl:value-of select="substring-before($texte, '&#xD;&#xA;&#xD;&#xA;')"/>
+                </xsl:when>
+                <xsl:when test="contains($texte, '&#xD;&#xD;')">
+                    <xsl:value-of select="substring-before($texte, '&#xD;&#xD;')"/>
+                </xsl:when>
+                <xsl:when test="contains($texte, '&#xA;&#xA;')">
+                    <xsl:value-of select="substring-before($texte, '&#xA;&#xA;')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$texte"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
 
         <!-- 2. Remplacer les slashs typographiques " / " par · -->
         <xsl:variable name="remplace-slash" select="replace($tronque, ' / ', ' · ')"/>
 
-        <!-- 3. Remplacer les retours à la ligne restants par · -->
+        <!-- 3. Remplacer les retours à la ligne par · -->
         <xsl:variable name="remplace-retours" select="replace($remplace-slash, '[&#xD;&#xA;]+', ' · ')"/>
 
-        <!-- 4. Nettoyer les · successifs et espaces inutiles -->
-        <xsl:variable name="nettoye" select="replace(normalize-space($remplace-retours), '· +', '· ')"/>
+        <!-- 4. Nettoyer les espaces multiples -->
+        <xsl:variable name="nettoye-espaces" select="normalize-space($remplace-retours)"/>
 
-        <xsl:value-of select="$nettoye"/>
+        <!-- 5. Nettoyer les · successifs -->
+        <xsl:variable name="nettoye-points" select="replace($nettoye-espaces, '(· +)+', ' · ')"/>
+
+        <!-- 6. Supprimer les · en début et fin -->
+        <xsl:variable name="final" select="replace($nettoye-points, '^· +|· +$', '')"/>
+
+        <xsl:value-of select="$final"/>
     </xsl:template>
-
 
     <xsl:template name="format-with-br">
         <xsl:param name="text"/>
@@ -1262,8 +1282,8 @@
 
     <!-- Template pour le logo animé du CMBV -->
     <xsl:template name="cmbv-logo">
-        <a href="https://cmbv.fr/fr/ressources/ressources-numeriques" title="CMBV - Ressources numériques">
-            <div class="logo">                
+        <div class="logo">  
+            <a href="https://cmbv.fr/fr/ressources/ressources-numeriques" title="CMBV - Ressources numériques">    
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" id="svg-logo-animation" class="svg-logo-animation logo-loaded">
                         <mask id="myClip">
                             <rect x="0" y="0" width="300" height="280" fill="#fff"></rect>
@@ -1293,8 +1313,8 @@
                         </g>
                         
                 </svg>
-            </div>
-        </a>
+            </a>
+        </div>
     </xsl:template>
 
 </xsl:stylesheet>
