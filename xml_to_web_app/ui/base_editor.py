@@ -11,19 +11,19 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
     QPushButton, QTextEdit, QTabWidget, QWidget,
     QMessageBox, QGroupBox, QStatusBar, QFrame,
-    QProgressBar
+    QProgressBar, QSizePolicy
 )
 from PySide6.QtGui import QFont, QKeySequence, QShortcut
 
 from .wysiwyg_editor import WysiwygEditor
 
-class MetaQDialogABC(type(QDialog), ABCMeta):
+class MetaQWidgetABC(type(QWidget), ABCMeta):
     """Métaclasse combinée pour résoudre le conflit entre QDialog et ABC."""
     pass
 
-class BaseEditor(QDialog, metaclass=MetaQDialogABC):
+class BaseEditorWidget(QWidget, metaclass=MetaQWidgetABC):
     """
-    Classe de base pour les interfaces d'édition avec éditeur WYSIWYG.
+    Widget de base pour les interfaces d'édition avec éditeur WYSIWYG.
     
     Fournit les fonctionnalités communes :
     - Éditeur WYSIWYG avec onglets (visuel/HTML)
@@ -41,22 +41,23 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
     Signals:
         data_saved: Émis quand les données sont sauvegardées (Any)
         editing_cancelled: Émis quand l'édition est annulée
+        help_requested: Émis quand l'aide est demandée
     """
     
     # Signaux Qt communs
     data_saved = Signal(object)  # Type générique pour les données sauvegardées
     editing_cancelled = Signal()
+    help_requested = Signal()
     
-    def __init__(self, data: Optional[Any] = None, parent: Optional[QWidget] = None, 
-                 window_title: str = "Éditeur", dialog_size: tuple = (1000, 700)):
+    def __init__(self, data: Optional[Any] = None, parent: Optional[QWidget] = None,
+                 show_action_buttons: bool = True):
         """
         Initialise l'éditeur de base.
         
         Args:
             data: Données à éditer (None pour création)
             parent: Widget parent
-            window_title: Titre de la fenêtre
-            dialog_size: Taille de la fenêtre (largeur, hauteur)
+            show_action_buttons: Afficher les boutons d'action (Sauvegarder/Annuler)
         """
         super().__init__(parent)
         
@@ -66,14 +67,11 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         self._has_unsaved_changes = False
         self._auto_save_enabled = True
         self._content_change_callback: Optional[Callable[[str], None]] = None
+        self._show_action_buttons = show_action_buttons
         
         # État de l'éditeur
         self._editor_ready = False
         self._initial_content_loaded = False
-        
-        # Configuration de la fenêtre
-        self._window_title = window_title
-        self._dialog_size = dialog_size
         
         self._setup_ui()
         self._setup_connections()
@@ -81,18 +79,18 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         
         # Initialisation des données spécifiques
         self._initialize_data()
+
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        self.adjustSize()
         
         self._logger.info(f"{self.__class__.__name__} initialisé - {'Nouvelles données' if self._is_new_data else 'Données existantes'}")
     
     def _setup_ui(self) -> None:
         """Configure l'interface utilisateur commune."""
-        self.setWindowTitle(self._window_title)
-        self.setModal(True)
-        self.resize(*self._dialog_size)
-        
         # Layout principal
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(10)
+        main_layout.setContentsMargins(10, 10, 10, 10)
         
         # Section d'informations spécifiques (implémentée par les classes filles)
         self._create_info_section(main_layout)
@@ -103,8 +101,9 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         # Barre de statut commune
         self._create_status_section(main_layout)
         
-        # Boutons d'action communs
-        self._create_action_buttons(main_layout)
+        # Boutons d'action communs (optionnels)
+        if self._show_action_buttons:
+            self._create_action_buttons(main_layout)
     
     @abstractmethod
     def _create_info_section(self, parent_layout: QVBoxLayout) -> None:
@@ -124,6 +123,7 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         
         # Onglets pour différents modes d'édition
         self.tab_widget = QTabWidget()
+        self.tab_widget.setObjectName("editor")
         
         # Onglet éditeur WYSIWYG
         self._create_wysiwyg_tab()
@@ -162,6 +162,9 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         
         # Éditeur WYSIWYG
         self.wysiwyg_editor = WysiwygEditor()
+        self.wysiwyg_editor.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.wysiwyg_editor.setMinimumHeight(500)  # ou une valeur raisonnable
+
         wysiwyg_layout.addWidget(self.wysiwyg_editor)
         
         self.tab_widget.addTab(wysiwyg_widget, "Éditeur Visuel")
@@ -241,11 +244,13 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         # Boutons principaux
         self.cancel_button = QPushButton("Annuler")
         self.cancel_button.clicked.connect(self._cancel_editing)
+        self.cancel_button.setObjectName("secondary")
         button_layout.addWidget(self.cancel_button)
         
         self.save_button = QPushButton(self._get_save_button_text())
         self.save_button.setDefault(True)
         self.save_button.clicked.connect(self._save_data_wrapper)
+        self.save_button.setObjectName("primary")
         button_layout.addWidget(self.save_button)
         
         parent_layout.addLayout(button_layout)
@@ -365,11 +370,9 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         if self._has_unsaved_changes:
             self.unsaved_label.setText("● Modifications non sauvegardées")
             self.unsaved_label.setStyleSheet("color: #dc3545; font-weight: bold;")
-            self.setWindowTitle(f"{self._window_title} *")
         else:
             self.unsaved_label.setText("✓ Sauvegardé")
             self.unsaved_label.setStyleSheet("color: #28a745;")
-            self.setWindowTitle(self._window_title)
     
     @abstractmethod
     def _validate_data(self) -> bool:
@@ -493,22 +496,31 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         return "Mettre à jour" if not self._is_new_data else "Enregistrer"
     
     def _cancel_editing(self) -> None:
-        """Annule l'édition."""
+        """Annule les modifications en fonction du contexte (QDialog ou non)."""
         if self._has_unsaved_changes:
             reply = QMessageBox.question(
                 self,
-                "Modifications non sauvegardées",
-                "Vous avez des modifications non sauvegardées. Voulez-vous vraiment quitter ?",
+                "Annuler les modifications",
+                "Toutes les modifications non sauvegardées seront perdues.\nSouhaitez-vous continuer ?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No
             )
-            
             if reply != QMessageBox.StandardButton.Yes:
                 return
-        
-        self.editing_cancelled.emit()
-        self.reject()
-    
+
+        # Cas 1 : si dans un QDialog → émettre signal pour fermeture
+        top_level = self.window()
+        from PySide6.QtWidgets import QDialog
+        if isinstance(top_level, QDialog):
+            self.editing_cancelled.emit()
+            return
+
+        # Cas 2 : sinon → recharger les données
+        self._has_unsaved_changes = False
+        self._update_unsaved_indicator()
+        self._load_initial_content()
+        self._update_status("Modifications annulées.")
+
     def _show_error(self, message: str) -> None:
         """Affiche un message d'erreur."""
         QMessageBox.critical(self, "Erreur", message)
@@ -516,8 +528,7 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
     
     def _show_help(self) -> None:
         """Affiche l'aide générique."""
-        help_text = self._get_help_text()
-        QMessageBox.information(self, "Aide", help_text)
+        self.help_requested.emit()
     
     def _get_help_text(self) -> str:
         """
@@ -533,7 +544,7 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
 <h4>Raccourcis clavier :</h4>
 <ul>
 <li><b>Ctrl+S</b> : Sauvegarder</li>
-<li><b>Ctrl+Q</b> : Annuler et fermer</li>
+<li><b>Ctrl+Q</b> : Annuler</li>
 <li><b>F1</b> : Afficher cette aide</li>
 </ul>
 
@@ -555,24 +566,6 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         """Met à jour le message de statut."""
         self.status_bar.showMessage(message)
     
-    def closeEvent(self, event) -> None:
-        """Gère la fermeture de la fenêtre."""
-        if self._has_unsaved_changes:
-            reply = QMessageBox.question(
-                self,
-                "Modifications non sauvegardées",
-                "Vous avez des modifications non sauvegardées. Voulez-vous vraiment fermer ?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No
-            )
-            
-            if reply == QMessageBox.StandardButton.Yes:
-                event.accept()
-            else:
-                event.ignore()
-        else:
-            event.accept()
-    
     # Méthodes publiques pour l'interaction
     
     def get_data(self) -> Optional[Any]:
@@ -583,6 +576,27 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
             Les données actuelles ou None
         """
         return self._data
+    
+    def has_unsaved_changes(self) -> bool:
+        """
+        Vérifie si des modifications non sauvegardées existent.
+        
+        Returns:
+            True si des modifications non sauvegardées existent
+        """
+        return self._has_unsaved_changes
+    
+    def save(self) -> bool:
+        """
+        Sauvegarde les données de manière programmatique.
+        
+        Returns:
+            True si la sauvegarde a réussi
+        """
+        if self._validate_data():
+            self._save_data_wrapper()
+            return not self._has_unsaved_changes
+        return False
     
     def set_content_change_callback(self, callback: Callable[[str], None]) -> None:
         """
@@ -603,3 +617,128 @@ class BaseEditor(QDialog, metaclass=MetaQDialogABC):
         self._auto_save_enabled = enabled
         if hasattr(self, 'wysiwyg_editor'):
             self.wysiwyg_editor.enable_auto_save(enabled)
+    
+    def get_current_content(self, callback: Callable[[str], None]) -> None:
+        """
+        Récupère le contenu actuel de l'éditeur actif.
+        
+        Args:
+            callback: Fonction appelée avec le contenu
+        """
+        if self.tab_widget.currentIndex() == 0:  # WYSIWYG
+            if self._editor_ready:
+                self.wysiwyg_editor.get_content(callback)
+            else:
+                callback("")
+        else:  # HTML
+            callback(self.html_editor.toPlainText())
+    
+    def set_content(self, content: str) -> None:
+        """
+        Définit le contenu de l'éditeur.
+        
+        Args:
+            content: Contenu HTML à charger
+        """
+        if self._editor_ready:
+            self.wysiwyg_editor.load_content(content)
+        self.html_editor.setPlainText(content)
+
+
+class MetaQDialogABC(type(QDialog), ABCMeta):
+    """Métaclasse combinée pour résoudre le conflit entre QDialog et ABC."""
+    pass
+
+
+class BaseEditorDialog(QDialog, metaclass=MetaQDialogABC):
+    """
+    Classe de dialogue pour les interfaces d'édition avec éditeur WYSIWYG.
+    
+    Encapsule BaseEditorWidget dans un QDialog pour une utilisation en tant que fenêtre modale.
+    Gère automatiquement la fermeture avec vérification des modifications non sauvegardées.
+    
+    Signals:
+        data_saved: Émis quand les données sont sauvegardées (Any)
+        editing_cancelled: Émis quand l'édition est annulée
+    """
+    
+    # Signaux Qt
+    data_saved = Signal(object)
+    editing_cancelled = Signal()
+    
+    def __init__(self, editor_widget_class: type, data: Optional[Any] = None, 
+                 parent: Optional[QWidget] = None, window_title: str = "Éditeur", 
+                 dialog_size: tuple = (1000, 700)):
+        """
+        Initialise le dialogue d'éditeur.
+        
+        Args:
+            editor_widget_class: Classe du widget d'éditeur à utiliser
+            data: Données à éditer (None pour création)
+            parent: Widget parent
+            window_title: Titre de la fenêtre
+            dialog_size: Taille de la fenêtre (largeur, hauteur)
+        """
+        super().__init__(parent)
+        
+        self._window_title = window_title
+        
+        # Configuration de la fenêtre
+        self.setWindowTitle(window_title)
+        self.setModal(True)
+        self.resize(*dialog_size)
+        
+        # Layout principal
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Widget d'éditeur intégré
+        self.editor_widget = editor_widget_class(data, self, show_action_buttons=True)
+        layout.addWidget(self.editor_widget)
+        
+        # Connexions
+        self.editor_widget.data_saved.connect(self._on_data_saved)
+        self.editor_widget.editing_cancelled.connect(self._on_editing_cancelled)
+        self.editor_widget.help_requested.connect(self._on_help_requested)
+    
+    def _on_data_saved(self, data: Any) -> None:
+        """Callback appelé quand les données sont sauvegardées."""
+        self.data_saved.emit(data)
+        self.accept()
+    
+    def _on_editing_cancelled(self) -> None:
+        """Callback appelé quand l'édition est annulée."""
+        self.editing_cancelled.emit()
+        self.reject()
+    
+    def _on_help_requested(self) -> None:
+        """Callback appelé quand l'aide est demandée."""
+        help_text = self.editor_widget._get_help_text()
+        QMessageBox.information(self, "Aide", help_text)
+    
+    def closeEvent(self, event) -> None:
+        """Gère la fermeture de la fenêtre."""
+        if self.editor_widget.has_unsaved_changes():
+            reply = QMessageBox.question(
+                self,
+                "Modifications non sauvegardées",
+                "Vous avez des modifications non sauvegardées. Voulez-vous vraiment fermer ?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            event.accept()
+    
+    def get_editor_widget(self) -> BaseEditorWidget:
+        """
+        Retourne l'instance du widget éditeur.
+        
+        Returns:
+            Le widget éditeur utilisé dans ce QDialog
+        """
+        return self.editor_widget

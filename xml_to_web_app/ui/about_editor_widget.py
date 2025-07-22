@@ -5,17 +5,14 @@ Permet l'édition du contenu HTML de la page à propos avec un éditeur WYSIWYG.
 Cette interface se présente sous la forme d'une classe qui hérite de BaseEditor.
 """
 
-from typing import Optional
-from PySide6.QtWidgets import (
-    QVBoxLayout, QLabel, QGroupBox, QFormLayout, QWidget
-)
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QGroupBox, QFormLayout
+from PySide6.QtCore import Qt
 
-from ..utils.french_date_utils import format_french_datetime
-from .base_editor import BaseEditor
+from .base_editor import BaseEditorWidget
 from ..models.about import About, AboutValidationError, validate_about_content
+from ..utils.french_date_utils import format_french_datetime
 
-
-class AboutEditor(BaseEditor):
+class AboutEditorWidget(BaseEditorWidget):
     """
     Fenêtre d'édition de la page à propos de l'édition avec éditeur WYSIWYG intégré.
     
@@ -24,24 +21,12 @@ class AboutEditor(BaseEditor):
     
     Hérite de BaseEditor pour les fonctionnalités communes d'édition.
     """
-    
-    def __init__(self, about: Optional[About] = None, parent: Optional[QWidget] = None):
-        """
-        Initialise l'éditeur de l'à propos de l'édition.
-        
-        Args:
-            about: A propos à éditer
-            parent: Widget parent
-        """
-        super().__init__(
-            data=about,
-            parent=parent,
-            window_title="Éditeur pour la page à propos de l'édition",
-            dialog_size=(1000, 700)
-        )
-    
     def _create_info_section(self, parent_layout: QVBoxLayout) -> None:
         """Crée les métadonnées."""
+        title = QLabel("Editer la page 'A propos'")
+        title.setObjectName("title")
+        title. setAlignment(Qt.AlignCenter)
+
         info_group = QGroupBox()
         info_layout = QFormLayout(info_group)
 
@@ -50,8 +35,9 @@ class AboutEditor(BaseEditor):
             self.updated_label = QLabel(format_french_datetime(self._data.updated_at))
             info_layout.addRow("Modifié le:", self.updated_label)
         
+        parent_layout.addWidget(title)
         parent_layout.addWidget(info_group)
-    
+
     def _load_data(self) -> None:
         """Charge les données de la page à propos dans l'interface."""
         if not self._data:
@@ -135,7 +121,7 @@ class AboutEditor(BaseEditor):
     
     # Méthodes publiques spécifiques aux projets
     
-    def get_about(self) -> Optional[About]:
+    def get_about(self) -> About:
         """
         Retourne l'à propos en cours d'édition.
         

@@ -78,6 +78,7 @@ class Project:
         if self.description_html:
             desc_elem = ET.SubElement(project_elem, "description_html")
             desc_elem.text = self.description_html
+            self.truncated_html = truncate_html_safely(self.description_html)
 
         if self.truncated_html:
             preview_elem = ET.SubElement(project_elem, "preview")

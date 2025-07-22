@@ -34,7 +34,7 @@ class AutoTransformationWidget(QWidget):
         
         # Titre principal
         title = QLabel("Transformation automatique XML vers Web")
-        title.setFont(QFont("Arial", 16, QFont.Bold))
+        title.setObjectName("title")
         title.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(title)
         
@@ -44,7 +44,7 @@ class AutoTransformationWidget(QWidget):
             "Assurez-vous que tous les projets sont définis dans l'onglet 'Projets'."
         )
         warning_section.setWordWrap(True)
-        warning_section.setStyleSheet("QLabel { color: #ff6b35; font-weight: bold; padding: 10px; }")
+        warning_section.setObjectName("status-warning")
         main_layout.addWidget(warning_section)
         
         # Section de sélection de fichier
@@ -58,7 +58,7 @@ class AutoTransformationWidget(QWidget):
         self.start_process_button = QPushButton("Démarrer le processus complet")
         self.start_process_button.clicked.connect(self.start_complete_process)
         self.start_process_button.setEnabled(False)
-        self.start_process_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; font-weight: bold; }")
+        self.start_process_button.setObjectName("primary")
         
         button_layout.addWidget(self.add_file_button)
         button_layout.addWidget(self.start_process_button)
@@ -89,6 +89,7 @@ class AutoTransformationWidget(QWidget):
         projects_layout = QVBoxLayout(projects_group)
         
         self.projects_status = QTextEdit()
+        self.projects_status.setObjectName("no-hover")
         self.projects_status.setReadOnly(True)
         self.projects_status.setMaximumHeight(150)
         self.projects_status.setPlainText("Aucune vérification effectuée")
@@ -102,6 +103,7 @@ class AutoTransformationWidget(QWidget):
         results_layout = QVBoxLayout(results_group)
         
         self.results_text = QTextEdit()
+        self.results_text.setObjectName("no-hover")
         self.results_text.setReadOnly(True)
         self.results_text.setMaximumHeight(120)
         
@@ -110,9 +112,11 @@ class AutoTransformationWidget(QWidget):
         
         self.download_button = QPushButton("Télécharger le ZIP")
         self.download_button.clicked.connect(self.download_zip)
+        self.download_button.setObjectName("primary")
         self.download_button.setEnabled(False)
         
         self.clear_button = QPushButton("Effacer les résultats")
+        self.clear_button.setObjectName("secondary")
         self.clear_button.clicked.connect(self.clear_results)
         self.clear_button.setEnabled(False)
         

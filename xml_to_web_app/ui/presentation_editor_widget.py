@@ -6,43 +6,28 @@ ainsi que du contenu HTML de la page de présentation avec un éditeur WYSIWYG.
 Cette interface se présente sous la forme d'une classe qui hérite de BaseEditor.
 """
 
-from typing import Optional
-from PySide6.QtWidgets import (
-    QVBoxLayout, QLabel, QLineEdit, QGroupBox, QFormLayout, QWidget
-)
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QLineEdit, QGroupBox, QFormLayout
+from PySide6.QtCore import Qt
 
-from ..utils.french_date_utils import format_french_datetime
-from .base_editor import BaseEditor
+from .base_editor import BaseEditorWidget
 from ..models.presentation import Presentation, PresentationValidationError, validate_presentation_title, validate_presentation_subtitle, validate_presentation_content
+from ..utils.french_date_utils import format_french_datetime
 
-
-class PresentationEditor(BaseEditor):
+class PresentationEditorWidget(BaseEditorWidget):
     """
     Fenêtre d'édition de la présentation de l'édition avec éditeur WYSIWYG intégré.
     
     Permet l'édition du titre et sous-titre du site web de l'édition et de son contenu HTML.
     Supporte la modification du contenu de la page de présentation.
     
-    Hérite de BaseEditor pour les fonctionnalités communes d'édition.
+    Hérite de BaseEditorWidget pour les fonctionnalités communes d'édition.
     """
-    
-    def __init__(self, presentation: Optional[Presentation] = None, parent: Optional[QWidget] = None):
-        """
-        Initialise l'éditeur de la presentation de l'édition.
-        
-        Args:
-            presentation: Présentation à éditer
-            parent: Widget parent
-        """
-        super().__init__(
-            data=presentation,
-            parent=parent,
-            window_title="Éditeur de la présentation de l'édition",
-            dialog_size=(1000, 700)
-        )
-    
     def _create_info_section(self, parent_layout: QVBoxLayout) -> None:
         """Crée la section pour le titre et le sous-titre + les métadonnées."""
+        title = QLabel("Editer la page d'accueil de l'édition")
+        title.setObjectName("title")
+        title. setAlignment(Qt.AlignCenter)
+
         info_group = QGroupBox()
         info_layout = QFormLayout(info_group)
 
@@ -63,13 +48,14 @@ class PresentationEditor(BaseEditor):
         self.subtitle_edit.setMaxLength(300)
         info_layout.addRow("Sous-titre de l'édition numérique:", self.subtitle_edit)
         
+        parent_layout.addWidget(title)
         parent_layout.addWidget(info_group)
-    
+
     def _setup_specific_connections(self) -> None:
         """Configure les connexions spécifiques au projet."""
         self.title_edit.textChanged.connect(self._on_title_changed)
         self.subtitle_edit.textChanged.connect(self._on_subtitle_changed)
-    
+
     def _load_data(self) -> None:
         """Charge les données du projet dans l'interface."""
         if not self._data:
@@ -83,7 +69,7 @@ class PresentationEditor(BaseEditor):
         self.updated_label.setText(format_french_datetime(self._data.updated_at))
         
         self._update_status(f"Chargement de la présentation")
-    
+
     def _load_initial_content(self) -> None:
         """Charge le contenu initial de présentation."""
         if self._data and self._data.content_html:
@@ -93,11 +79,11 @@ class PresentationEditor(BaseEditor):
             self._update_status(f"Présentation de l'édition chargée")
         else:
             self._update_status("Présentation par défaut prête")
-    
+
     def _validate_data(self) -> bool:
         """Valide les données du projet."""
         return self._validate_presentation_title() and self._validate_presentation_subtitle()
-    
+
     def _validate_presentation_title(self) -> bool:
         """
         Valide le titre de l'édition numérique.
@@ -133,7 +119,7 @@ class PresentationEditor(BaseEditor):
             self.subtitle_edit.setStyleSheet("border: 2px solid #dc3545;")
             self._update_status(f"Sous-titre invalide: {e}")
             return False
-    
+
     def _save_data(self, content: str) -> Presentation:
         """
         Sauvegarde la présentation avec le contenu spécifié.
@@ -166,7 +152,7 @@ class PresentationEditor(BaseEditor):
                 
         except PresentationValidationError as e:
             raise Exception(f"Erreur de validation: {e}")
-    
+
     def _on_data_saved_success(self, saved_data: Presentation) -> None:
         """Met à jour l'interface après une sauvegarde réussie."""
         # Met à jour les informations affichées pour les projets existants
@@ -182,25 +168,21 @@ class PresentationEditor(BaseEditor):
         """Callback appelé quand l'identifiant du projet change."""
         self._mark_as_changed()
         self._validate_presentation_subtitle()
-    
+
     def _get_help_text(self) -> str:
-        """Retourne le texte d'aide spécifique aux projets."""
+        """Retourne le texte d'aide spécifique à la présentation."""
+
         base_help = super()._get_help_text()
-        
-        presentation_specific_help = """
+        return base_help + """
 <h4>Spécificités de l'onglet présentation :</h4>
 <ul>
 <li><b>Titre de l'édition numérique</b> : Requis, utilisé dans l'entête de l'édition sur toutes les pages</li>
 <li><b>Sous-titre de l'édition numérique</b> : Optionnel, s'affiche sous le titre de l'édition</li>
 <li><b>Modification du contenu de la page de présentation</b> : Ecrase le contenu précédent au moment de la sauvegarde</li>
 </ul>
-        """
-        
-        return base_help.replace("</ul>", f"</ul>{presentation_specific_help}")
+"""
     
-    # Méthodes publiques spécifiques aux projets
-    
-    def get_presentation(self) -> Optional[Presentation]:
+    def get_presentation(self) -> Presentation:
         """
         Retourne la présentation en cours d'édition.
         

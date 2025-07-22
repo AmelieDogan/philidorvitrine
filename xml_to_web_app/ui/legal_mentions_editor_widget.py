@@ -5,43 +5,28 @@ Permet l'édition du contenu HTML des mentions légales avec un éditeur WYSIWYG
 Cette interface se présente sous la forme d'une classe qui hérite de BaseEditor.
 """
 
-from typing import Optional
-from PySide6.QtWidgets import (
-    QVBoxLayout, QLabel, QGroupBox, QFormLayout, QWidget
-)
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QGroupBox, QFormLayout
+from PySide6.QtCore import Qt
 
-from ..utils.french_date_utils import format_french_datetime
-from .base_editor import BaseEditor
+from .base_editor import BaseEditorWidget
 from ..models.legal_mentions import LegalMentions, LegalMentionsValidationError, validate_legal_mentions_content
+from ..utils.french_date_utils import format_french_datetime
 
-
-class LegalMentionsEditor(BaseEditor):
+class LegalMentionsEditorWidget(BaseEditorWidget):
     """
     Fenêtre d'édition des mentions légales de l'édition avec éditeur WYSIWYG intégré.
     
-    Permet l'édition du contenu HTML d ela page des mentios légales.
+    Permet l'édition du contenu HTML de la page des mentios légales.
     Supporte la modification du contenu de la page mentions légales.
     
-    Hérite de BaseEditor pour les fonctionnalités communes d'édition.
+    Hérite de BaseEditorWidget pour les fonctionnalités communes d'édition.
     """
-    
-    def __init__(self, legal_mentions: Optional[LegalMentions] = None, parent: Optional[QWidget] = None):
-        """
-        Initialise l'éditeur des mentions légales de l'édition.
-        
-        Args:
-            legal_mentions: Mentions légales à éditer
-            parent: Widget parent
-        """
-        super().__init__(
-            data=legal_mentions,
-            parent=parent,
-            window_title="Éditeur des mentions légales de l'édition",
-            dialog_size=(1000, 700)
-        )
-    
     def _create_info_section(self, parent_layout: QVBoxLayout) -> None:
         """Crée les métadonnées."""
+        title = QLabel("Editer les mentions légales de l'édition")
+        title.setObjectName("title")
+        title. setAlignment(Qt.AlignCenter)
+
         info_group = QGroupBox()
         info_layout = QFormLayout(info_group)
 
@@ -50,8 +35,9 @@ class LegalMentionsEditor(BaseEditor):
             self.updated_label = QLabel(format_french_datetime(self._data.updated_at))
             info_layout.addRow("Modifié le:", self.updated_label)
         
+        parent_layout.addWidget(title)
         parent_layout.addWidget(info_group)
-    
+
     def _load_data(self) -> None:
         """Charge les données des mentions légales dans l'interface."""
         if not self._data:
@@ -61,7 +47,7 @@ class LegalMentionsEditor(BaseEditor):
         self.updated_label.setText(format_french_datetime(self._data.updated_at))
         
         self._update_status(f"Chargement des mentions légales")
-    
+
     def _load_initial_content(self) -> None:
         """Charge le contenu initial des mentions légales."""
         if self._data and self._data.content_html:
@@ -84,7 +70,6 @@ class LegalMentionsEditor(BaseEditor):
             self._update_status(f"Contenu HTML invalide : {e}")
             return False
 
-    
     def _save_data(self, content: str) -> LegalMentions:
         """
         Sauvegarde les mentions légales avec le contenu spécifié.
@@ -113,7 +98,7 @@ class LegalMentionsEditor(BaseEditor):
                 
         except LegalMentionsValidationError as e:
             raise Exception(f"Erreur de validation: {e}")
-    
+
     def _on_data_saved_success(self, saved_data: LegalMentions) -> None:
         """Met à jour l'interface après une sauvegarde réussie."""
         # Met à jour les informations affichées
@@ -133,9 +118,7 @@ class LegalMentionsEditor(BaseEditor):
         
         return base_help.replace("</ul>", f"</ul>{legal_mentions_specific_help}")
     
-    # Méthodes publiques spécifiques aux projets
-    
-    def get_legal_mentions(self) -> Optional[LegalMentions]:
+    def get_legal_mentions(self) -> LegalMentions:
         """
         Retourne les mentions légales en cours d'édition.
         

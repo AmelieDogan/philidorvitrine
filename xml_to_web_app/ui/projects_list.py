@@ -3,7 +3,7 @@ from PySide6.QtWidgets import (
     QPushButton, QTextEdit, QMessageBox, QGroupBox, QFormLayout
 )
 from PySide6.QtCore import Qt
-from .project_editor import ProjectEditor
+from .project_editor_dialog import ProjectEditorDialog
 from ..utils.french_date_utils import format_french_datetime
 
 class ProjectsListWidget(QWidget):
@@ -15,7 +15,9 @@ class ProjectsListWidget(QWidget):
         # Layout comprenant le main_layout et les bouttons
         global_layout = QVBoxLayout(self)
 
-        self.title_widget = QLabel("Liste des projets")
+        self.title_widget = QLabel("Gestion des projets")
+        self.title_widget.setObjectName("title")
+        self.title_widget.setAlignment(Qt.AlignCenter)
         global_layout.addWidget(self.title_widget)
 
         self.main_widget = QGroupBox()
@@ -27,6 +29,8 @@ class ProjectsListWidget(QWidget):
         # Widget de gauche
         self.list_widget = QListWidget()
 
+        self.list_widget.itemSelectionChanged.connect(self.update_preview)
+
         # widget de droite 
         self.prewiew_widget = QGroupBox()
         self.prewiew_widget.setTitle("Prévisualisation du projet sélectionné")
@@ -37,6 +41,7 @@ class ProjectsListWidget(QWidget):
 
         # Widget pour les métadonnées
         self.info_group = QGroupBox("Métadonnées du Projet")
+        self.info_group.setObjectName("sub-group")
         self.info_layout = QFormLayout(self.info_group)
 
         self.id_label = QLabel(str(""))
@@ -51,7 +56,10 @@ class ProjectsListWidget(QWidget):
 
         # Widget pour la prévisualisation HTML
         self.html_preview_title = QLabel("Description du projet")
+        self.html_preview_title.setObjectName("sub-group")
+
         self.html_preview = QTextEdit()
+        self.html_preview.setObjectName("no-hover")
         self.html_preview.setReadOnly(True)
 
         self.preview_layout.addWidget(self.html_preview_title)
@@ -69,10 +77,14 @@ class ProjectsListWidget(QWidget):
         # Ajout des boutons pour créer et modifier des projets
         self.edit_button = QPushButton("Modifier le projet")
         self.edit_button.clicked.connect(self.edit_selected_project)
+        self.edit_button.setObjectName("primary")
+        self.edit_button.setEnabled(False)
         global_layout.addWidget(self.edit_button)
 
         self.delete_button = QPushButton("Supprimer le projet")
         self.delete_button.clicked.connect(self.delete_selected_project)
+        self.delete_button.setObjectName("secondary")
+        self.delete_button.setEnabled(False)
         global_layout.addWidget(self.delete_button)
 
         self.new_button = QPushButton("Nouveau projet")
@@ -86,45 +98,41 @@ class ProjectsListWidget(QWidget):
         self.list_widget.clear()
         for project in self.project_manager.list_projects():
             item = QListWidgetItem(project.name)
-            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            item.setCheckState(Qt.Unchecked)
+            item.setFlags(item.flags() & ~Qt.ItemIsUserCheckable)
             item.setData(Qt.UserRole, project.uuid)
             self.list_widget.addItem(item)
+            self.edit_button.setEnabled(False)
+            self.delete_button.setEnabled(False)
 
         self.list_widget.itemChanged.connect(self.update_preview)
 
-    def update_preview(self, item):
-        """Met à jour la prévisualisation de la présentation d'un projet"""
-        if item.checkState() == Qt.Checked:
-
-            # Déconnecter temporairement le signal
-            self.list_widget.itemChanged.disconnect()
-            
-            # Parcourir tous les éléments et décocher les autres
-            for i in range(self.list_widget.count()):
-                other_item = self.list_widget.item(i)
-                if other_item != item:  # Ne pas toucher à l'élément actuellement coché
-                    other_item.setCheckState(Qt.Unchecked)
-            
-            # Reconnecter le signal
-            self.list_widget.itemChanged.connect(self.update_preview)
-
-            project_uuid = item.data(Qt.UserRole)
-            project = self.project_manager.get_project(project_uuid)
-            self.html_preview.setHtml(project.description_html or "<i>Aucune description</i>")
-            self.id_label.setText(str(project.id))
-            self.created_label.setText(format_french_datetime(project.created_at))
-            self.updated_label.setText(format_french_datetime(project.updated_at))
-        else:
+    def update_preview(self):
+        """Met à jour la prévisualisation selon l'élément sélectionné."""
+        selected_items = self.list_widget.selectedItems()
+        if not selected_items:
             self.html_preview.clear()
-            self.id_label.setText(str(""))
-            self.created_label.setText(str(""))
-            self.updated_label.setText(str(""))
+            self.id_label.setText("")
+            self.created_label.setText("")
+            self.updated_label.setText("")
+            self.edit_button.setEnabled(False)
+            self.delete_button.setEnabled(False)
+            return
+
+        item = selected_items[0]
+        project_uuid = item.data(Qt.UserRole)
+        project = self.project_manager.get_project(project_uuid)
+        self.html_preview.setHtml(project.description_html or "<i>Aucune description</i>")
+        self.id_label.setText(str(project.id))
+        self.created_label.setText(format_french_datetime(project.created_at))
+        self.updated_label.setText(format_french_datetime(project.updated_at))
+        self.edit_button.setEnabled(True)
+        self.delete_button.setEnabled(True)
+
 
     def edit_selected_project(self):
         """Edite le projet sélectionné"""
-        selected_items = [item for item in self.list_widget.findItems("", Qt.MatchContains)
-                          if item.checkState() == Qt.Checked]
+        selected_items = self.list_widget.selectedItems()
+
         if not selected_items:
             QMessageBox.information(self, "Aucun projet sélectionné", "Cochez un projet pour le modifier.")
             return
@@ -132,15 +140,14 @@ class ProjectsListWidget(QWidget):
         project_uuid = selected_items[0].data(Qt.UserRole)
         project = self.project_manager.get_project(project_uuid)
 
-        editor = ProjectEditor(project, self)
+        editor = ProjectEditorDialog(project, self)
         editor.data_saved.connect(lambda p: self._finalize_project_edit(editor, p))
         editor.exec()
 
     def delete_selected_project(self):
         """Supprime le projet sélectionné après confirmation"""
         # Trouver le projet coché
-        selected_items = [item for item in self.list_widget.findItems("", Qt.MatchContains)
-                        if item.checkState() == Qt.Checked]
+        selected_items = self.list_widget.selectedItems()
         
         if not selected_items:
             QMessageBox.information(self, "Aucun projet sélectionné", 
@@ -179,7 +186,7 @@ class ProjectsListWidget(QWidget):
 
     def create_new_project(self):
         """Crée un nouveau projet"""
-        editor = ProjectEditor(parent=self)
+        editor = ProjectEditorDialog(parent=self)
         editor.data_saved.connect(lambda p: self._finalize_project_edit(editor, p))
         editor.exec()
 

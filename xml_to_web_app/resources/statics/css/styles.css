@@ -9,14 +9,14 @@
 /* Polices personnalisées avec fallbacks */
 @font-face {
     font-family: 'Dala Moa';
-    src: url('../polices/Dala\ Moa/Dala\ Moa\ Bold.otf') format('opentype');
+    src: url('../fonts/Dala_Moa/Dala_Moa_Bold.otf') format('opentype');
     font-weight: bold;
     font-display: swap;
 }
 
 @font-face {
     font-family: 'Hermes';
-    src: url('../polices/Hermes/Hermes-Regular.otf') format('opentype');
+    src: url('../fonts/Hermes/Hermes-Regular.otf') format('opentype');
     font-weight: normal;
     font-display: swap;
 }

@@ -2,6 +2,7 @@ import sys
 from xml.etree import ElementTree as ET
 from pathlib import Path
 from PySide6 import QtWidgets
+
 from .ui import MainWindow
 from .core.project_manager import ProjectManager
 from .models.presentation import Presentation, create_default_presentation
@@ -16,6 +17,20 @@ PRESENTATION_XML_PATH = DATA_DIR / "presentation.xml"
 LEGAL_MENTIONS_XML_PATH = DATA_DIR / "legal_mentions.xml"
 ABOUT_XML_PATH = DATA_DIR / "about.xml"
 
+
+# ---------------- Gestion du style de l'appli ---------------- #
+
+def load_stylesheet(app):
+    style_path = Path(__file__).parent / "style.qss"
+    if style_path.exists():
+        try:
+            with open(style_path, 'r', encoding='utf-8') as f:
+                stylesheet = f.read()
+                app.setStyleSheet(stylesheet)
+        except Exception as e:
+            print(f"Erreur lors de l'application du style : {e}")
+    else:
+        print(f"Fichier de style non trouvé : {style_path}")
 
 # ---------------- Gestion des projets ---------------- #
 
@@ -109,6 +124,9 @@ def save_about(about: About):
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
+    # Charger le style
+    load_stylesheet(app)
+
     load_projects()
     presentation = load_presentation()
     legal_mentions = load_legal_mentions()
@@ -124,8 +142,7 @@ if __name__ == "__main__":
         about=about,
         save_about_callback=save_about
     )
-    widget.resize(1000, 700)
-    widget.show()
+    widget.showMaximized()
 
     exit_code = app.exec()
 
