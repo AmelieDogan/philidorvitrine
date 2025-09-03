@@ -1,4 +1,4 @@
-# PhilidorVitrine – Déploiement GitHub Pages
+# Philidor Vitrine – Déploiement GitHub Pages
 
 Cette branche contient les **fichiers statiques HTML, CSS, JS et médias** générés automatiquement à partir de la base de données **PHILIDOR4** et de la feuille XSLT du projet [PhilidorVitrine](https://github.com/bibliotheque-cmbv/philidorvitrine).
 
@@ -20,12 +20,12 @@ Cette branche contient les **fichiers statiques HTML, CSS, JS et médias** gén�
 > **Ne pas modifier directement ces fichiers ici.**  
 > Pour toute modification du contenu, du style ou du comportement :
 >
-> 👉 Modifiez la branche principale (`main`)  
-> 👉 Puis relancez la génération du site avec le logiciel fourni
+> - Modifiez la branche principale (`main`)  
+> - Puis relancez la génération du site avec le logiciel fourni
 
 ---
 
-## 🔗 Site en ligne
+## Site en ligne
 
 Le site est accessible à l’adresse suivante :  
 👉 https://bibliotheque-cmbv.github.io/philidorvitrine
