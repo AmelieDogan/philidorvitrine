@@ -52,13 +52,17 @@ cd philidorvitrine
 
 ```bash
 pip install -r requirements.txt
-Lancement de l'application :
+```
+
+### Lancement de l'application :
 
 ```bash
 python -m main
 ```
 
-Utilisation : L'application s'ouvrira avec une interface graphique. Vous pourrez naviguer entre les onglets pour éditer le contenu et lancer la transformation qui générera les fichiers du site web dans le dossier output.
+### Utilisation :
+
+L'application s'ouvrira avec une interface graphique. Vous pourrez naviguer entre les onglets pour éditer le contenu et lancer la transformation qui générera les fichiers du site web dans le dossier output.
 
 ## Attribution
 
