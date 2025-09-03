@@ -1,5 +1,11 @@
 # XML to WEB App
 
+![Python](https://img.shields.io/badge/Python-70.3%25-3776AB?style=flat-square&logo=python&logoColor=white)
+![XSLT](https://img.shields.io/badge/XSLT-21.4%25-555555?style=flat-square)
+![CSS](https://img.shields.io/badge/CSS-5.0%25-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-2.4%25-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![HTML](https://img.shields.io/badge/HTML-0.9%25-E34F26?style=flat-square&logo=html5&logoColor=white)
+
 XML to WEB App est une application de bureau conçue pour le Centre de Musique Baroque de Versailles (CMBV). Son objectif est de faciliter l'édition et la publication de Philidor Vitrine, une édition numérique basée sur les données XML de la base de données PHILIDOR4.
 
 Cette application permet aux utilisateurs de gérer le contenu éditorial (présentation, mentions légales, etc.) et de le transformer en un site web statique complet et stylisé, prêt pour la mise en ligne.
