@@ -1,19 +1,16 @@
-# PhilidorVitrine
+# XML to WEB App
 
-**PhilidorVitrine** est un projet initié par la **bibliothèque du Centre de Musique Baroque de Versailles (CMBV)**.  
-Il propose une mise en forme alternative de la base de données **Philidor 4**, conçue par le **pôle recherche** du CMBV, sous la forme d’un site web statique organisé thématiquement.
+XML to WEB App est une application de bureau conçue pour le Centre de Musique Baroque de Versailles (CMBV). Son objectif est de faciliter l'édition et la publication de Philidor Vitrine, une édition numérique basée sur les données XML de la base de données PHILIDOR4.
 
----
+Cette application permet aux utilisateurs de gérer le contenu éditorial (présentation, mentions légales, etc.) et de le transformer en un site web statique complet et stylisé, prêt pour la mise en ligne.
 
-## Objectifs
+## Philidor Vitrine : objectifs
 
 - **Offrir une entrée simplifiée et structurée** vers les données de Philidor 4, à destination d’un public plus large, moins familier des outils de recherche avancée.
 - **Mettre en valeur le contenu** de la base à travers une présentation éditoriale, claire et organisée "à la manière d’un catalogue papier".
 - **Respecter l'intégrité et la richesse de la base Philidor**, en se positionnant comme un **complément** à l’interface existante, et non comme un remplacement.
 
----
-
-## Fonctionnement
+## Fonctionnalités
 
 La vitrine statique est le résultat d'une transformation XSLT qui s’effectue via **un logiciel développé en Python**, ce dernier peut-être installé sur n'importe quel poste.
 
@@ -26,40 +23,46 @@ saxonche
  pour effectuer la transformation XSLT.
 - Le site HTML est généré automatiquement et compressé dans une archive ZIP téléchargeable.
 
-## Technologies principales
+## Technologies utilisées
 
-- **Python + PySide6** : interface graphique
-- **Saxon/CHE** : moteur XSLT en Python (via 
-saxonche
-)
-- **HTML statique** généré intégralement via la feuille de style XSLT
-- **Dossier 
-statics/
-** : contient la feuille de style CSS, le JavaScript, les images et les polices respectant la charte graphique du CMBV
+- **Python 3.x** : Le langage de programmation principal de l'application.
+- **PySide6** : Framework utilisé pour la création de l'interface graphique du bureau.
+- **XSLT 2.0** : Langage de transformation pour convertir les données XML en fichiers HTML.
+- **XML** : Format pour le stockage des données structurées.
+- **CSS** : Pour le stylisme de l'édition numérique générée, en respectant la charte graphique du CMBV.
 
----
+## Installation et utilisation
 
-## Institution partenaire
+Prérequis : Assurez-vous d'avoir **Python 3.x** installé sur votre système.
+
+### Clonage du repository :
+
+```bash
+git clone https://github.com/bibliotheque-cmbv/philidorvitrine.git
+cd philidorvitrine
+```
+
+### Installation des dépendances :
+
+```bash
+pip install -r requirements.txt
+Lancement de l'application :
+
+```bash
+python -m main
+```
+
+Utilisation : L'application s'ouvrira avec une interface graphique. Vous pourrez naviguer entre les onglets pour éditer le contenu et lancer la transformation qui générera les fichiers du site web dans le dossier output.
+
+## Attribution
+
+Ce projet a été développé par Amélie Dogan pour le CMBV dans le cadre de son stage de master 2 "Technologies numériques appliquées à l'histoire" à Ecole nationale des chartes.
 
 Ce projet est porté par :
 
 - **La bibliothèque du Centre de Musique Baroque de Versailles (CMBV)**
 - En dialogue avec le **pôle recherche du CMBV**, concepteur de la base Philidor 4
 
----
-
-## Licence
-
-Le projet est diffusé sous licence CC BY-NC-SA.
-
----
-
 ## Remerciements
 
 Nos remerciements chaleureux vont à l’ensemble des équipes du CMBV ayant contribué à la structuration et à l’enrichissement de la base Philidor 4.
-
----
-
-## Contact
-
-Pour toute question ou contribution : bibliotheque@cmbv.com
