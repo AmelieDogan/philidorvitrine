@@ -480,21 +480,21 @@ QFrame#welcome-header {
 
 QLabel#main-title {
     color: #bf957a;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
     background: transparent;
 }
 
 QLabel#main-subtitle {
     color: #fd766c;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 500;
     background: transparent;
 }
 
 QLabel#version-info {
     color: #4d5c70;
-    font-size: 14px;
+    font-size: 16px;
     font-style: italic;
     background: transparent;
 }

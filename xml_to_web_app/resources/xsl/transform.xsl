@@ -106,7 +106,7 @@
                             </section>
                             <section class="blue-box">
                                 <h3>Catalogues d'auteur</h3>
-                                <p>Sélectionnez un auteur pour voir les œuvres associées :</p>
+                                <p>Sélectionnez un auteur pour voir les œuvres et les sources associées :</p>
                                 
                                 <ul class="project-list">
                                     <xsl:for-each select="//item[generate-id(.) = generate-id(key('projects', projet)[1])]">
@@ -116,7 +116,7 @@
                                                 <xsl:value-of select="//projects_data//project[@id = current()/projet]/@name"/>
                                             </a>
                                             <span class="work-count">
-                                                (<xsl:value-of select="count(//item[projet = current()/projet])"/> œuvres)
+                                                (<xsl:value-of select="count(//item[projet = current()/projet and nature = 'Oeuvre' and not(frag)])"/> œuvres)
                                             </span>
                                         </li>
                                     </xsl:for-each>

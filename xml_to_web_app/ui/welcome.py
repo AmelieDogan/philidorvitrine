@@ -39,12 +39,6 @@ class WelcomeWidget(QWidget):
         # Cartes de navigation rapide
         self.create_navigation_cards(content_layout)
         
-        # Guide de démarrage rapide
-        self.create_quick_start_guide(content_layout)
-        
-        # Informations sur le flux de travail
-        self.create_workflow_info(content_layout)
-        
         # Section d'aide rapide
         self.create_help_section(content_layout)
         
@@ -203,108 +197,18 @@ class WelcomeWidget(QWidget):
         )
         desc_text.setWordWrap(True)
         desc_text.setObjectName("description-text")
+
+        warning_text = QLabel(
+            "Attention - Une connexion wifi est nécessaire pour charger les éditeurs de texte."
+        )
+        warning_text.setWordWrap(True)
+        warning_text.setObjectName("status-warning")
         
         desc_layout.addWidget(desc_title)
         desc_layout.addWidget(desc_text)
+        desc_layout.addWidget(warning_text)
         
         layout.addWidget(desc_frame)
-    
-    def create_quick_start_guide(self, layout):
-        """Crée le guide de démarrage rapide"""
-        guide_frame = QFrame()
-        guide_frame.setObjectName("guide-section")
-        guide_layout = QVBoxLayout(guide_frame)
-        guide_layout.setSpacing(15)
-        guide_layout.setContentsMargins(20, 20, 20, 20)
-        
-        guide_title = QLabel("Guide de démarrage rapide")
-        guide_title.setObjectName("section-title")
-        
-        # Utilisation d'un layout pour les étapes
-        steps_layout = QVBoxLayout()
-        steps_layout.setSpacing(10)
-        
-        steps = [
-            ("1", "Présentation", "Configurez le contenu de présentation de votre édition numérique"),
-            ("2", "Projets", "Ajoutez vos projets et définissez leurs identifiants Philidor 4"),
-            ("3", "Pages légales", "Personnalisez les mentions légales et la page 'À propos'"),
-            ("4", "Import de données", "Importez votre panier de données XML depuis Philidor 4"),
-            ("5", "Génération", "Lancez la transformation XSLT et téléchargez votre site web")
-        ]
-        
-        for step_num, step_title, step_desc in steps:
-            step_frame = self.create_step_item(step_num, step_title, step_desc)
-            steps_layout.addWidget(step_frame)
-        
-        guide_layout.addWidget(guide_title)
-        guide_layout.addLayout(steps_layout)
-        
-        layout.addWidget(guide_frame)
-    
-    def create_step_item(self, number, title, description):
-        """Crée un élément d'étape du guide"""
-        step_frame = QFrame()
-        step_frame.setObjectName("step-item")
-        step_layout = QHBoxLayout(step_frame)
-        step_layout.setSpacing(15)
-        step_layout.setContentsMargins(15, 10, 15, 10)
-        
-        # Numéro de l'étape
-        number_label = QLabel(number)
-        number_label.setObjectName("step-number")
-        number_label.setAlignment(Qt.AlignCenter)
-        number_label.setFixedSize(30, 30)
-        
-        # Contenu de l'étape
-        content_layout = QVBoxLayout()
-        content_layout.setSpacing(5)
-        
-        title_label = QLabel(title)
-        title_label.setObjectName("step-title")
-        
-        desc_label = QLabel(description)
-        desc_label.setObjectName("step-description")
-        desc_label.setWordWrap(True)
-        
-        content_layout.addWidget(title_label)
-        content_layout.addWidget(desc_label)
-        
-        step_layout.addWidget(number_label)
-        step_layout.addLayout(content_layout)
-        
-        return step_frame
-    
-    def create_workflow_info(self, layout):
-        """Crée les informations sur le flux de travail"""
-        workflow_frame = QFrame()
-        workflow_frame.setObjectName("workflow-section")
-        workflow_layout = QVBoxLayout(workflow_frame)
-        workflow_layout.setSpacing(15)
-        workflow_layout.setContentsMargins(20, 20, 20, 20)
-        
-        workflow_title = QLabel("💡 Conseils d'utilisation")
-        workflow_title.setObjectName("section-title")
-        
-        tips = [
-            "Suivez l'ordre des onglets de gauche à droite pour un flux optimal",
-            "Sauvegardez régulièrement vos modifications avec Ctrl+S",
-            "Vérifiez que tous vos projets sont bien configurés avant la transformation",
-            "Consultez l'onglet 'Aide' pour des informations détaillées sur chaque fonction"
-        ]
-        
-        tips_layout = QVBoxLayout()
-        tips_layout.setSpacing(8)
-        
-        for tip in tips:
-            tip_label = QLabel(f"• {tip}")
-            tip_label.setObjectName("tip-item")
-            tip_label.setWordWrap(True)
-            tips_layout.addWidget(tip_label)
-        
-        workflow_layout.addWidget(workflow_title)
-        workflow_layout.addLayout(tips_layout)
-        
-        layout.addWidget(workflow_frame)
     
     def create_help_section(self, layout):
         """Crée la section d'aide rapide"""

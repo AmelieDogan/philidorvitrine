@@ -6,6 +6,7 @@ from .presentation_editor_widget import PresentationEditorWidget
 from .legal_mentions_editor_widget import LegalMentionsEditorWidget
 from .about_editor_widget import AboutEditorWidget
 from .transformation import AutoTransformationWidget
+from .help_widget import HelpWidget
 
 class MainWindow(QMainWindow):
     def __init__(self, project_manager, save_projects_callback, presentation, save_presentation_callback, legal_mentions, save_legal_mentions_callback, about, save_about_callback):
@@ -49,6 +50,8 @@ class MainWindow(QMainWindow):
 
         self.transformation_widget = AutoTransformationWidget()
 
+        self.help_widget = HelpWidget()
+
         # Premier onglet - Sert de page d'accueil, page par défaut lorsque l'application se lance
         self.tabs.addTab(self.welcome_widget, "Accueil")
         # Deuxième onglet - Permet de modifier le contenu présentant l'édition numérique
@@ -65,7 +68,7 @@ class MainWindow(QMainWindow):
         # effectue la transformation XSLT et retourne un site web statique sous la forme d'archive web.
         self.tabs.addTab(self.transformation_widget, "Transformation")
         # Septième onglet - Donne toutes les indications d'aide
-        self.tabs.addTab(self.create_tab("Onglet d'aide"), "Aide")
+        self.tabs.addTab(self.help_widget, "Aide")
 
         self.presentation_editor.data_saved.connect(self._on_presentation_saved)
         self.legal_mentions_editor.data_saved.connect(self._on_legal_mentions_saved)
