@@ -18,7 +18,7 @@ Cette application permet aux utilisateurs de gérer le contenu éditorial (prés
 
 Le prototype du site est pour le moment disponible à l'adresse suivante, déploiement depuis le fork du compte GitHub de la bibliothèque du CMBV : https://bibliotheque-cmbv.github.io/philidorvitrine
 
-Les fichiers du site sont sur la branche **web_edition** de ce repository : [`web_edition` branch]([https://github.com//philidorvitrine/tree/main](https://github.com/AmelieDogan/philidorvitrine/tree/web_edition))
+Les fichiers du site sont sur la branche **web_edition** de ce repository : [`web_edition` branch](https://github.com/AmelieDogan/philidorvitrine/tree/web_edition)
 
 ## Fonctionnalités
 
