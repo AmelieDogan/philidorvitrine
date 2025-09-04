@@ -20,14 +20,14 @@ Cette branche contient les **fichiers statiques HTML, CSS, JS et médias** gén�
 > **Ne pas modifier directement ces fichiers ici.**  
 > Pour toute modification du contenu, du style ou du comportement :
 >
-> - Modifiez la branche principale (`main`)  
-> - Puis relancez la génération du site avec le logiciel fourni
+> - Modifiez à l'aide du logiciel fourni sur la branche principale (`main`)  
+> - Puis relancez la génération du site, toujours avec le logiciel fourni
 
 ---
 
 ## Site en ligne
 
-Le site est accessible à l’adresse suivante :  
+Le site est accessible à l’adresse suivante (depuis le GitHub du CMBV) :  
 👉 https://bibliotheque-cmbv.github.io/philidorvitrine
 
 ---
