@@ -16,6 +16,10 @@ Cette application permet aux utilisateurs de gérer le contenu éditorial (prés
 - **Mettre en valeur le contenu** de la base à travers une présentation éditoriale, claire et organisée "à la manière d’un catalogue papier".
 - **Respecter l'intégrité et la richesse de la base Philidor**, en se positionnant comme un **complément** à l’interface existante, et non comme un remplacement.
 
+Le prototype du site est pour le moment disponible à l'adresse suivante, déploiement depuis le fork du compte GitHub de la bibliothèque du CMBV : https://bibliotheque-cmbv.github.io/philidorvitrine
+
+Les fichiers du site sont sur la branche **web_edition** de ce repository : [`web_edition` branch]([https://github.com//philidorvitrine/tree/main](https://github.com/AmelieDogan/philidorvitrine/tree/web_edition))
+
 ## Fonctionnalités
 
 La vitrine statique est le résultat d'une transformation XSLT qui s’effectue via **un logiciel développé en Python**, ce dernier peut-être installé sur n'importe quel poste.
