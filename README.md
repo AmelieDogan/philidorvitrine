@@ -35,4 +35,4 @@ Le site est accessible à l’adresse suivante :
 ## 🛠 Génération
 
 Pour générer ces fichiers, voir le README du projet principal :  
-👉 [`main` branch](https://github.com/bibliotheque-cmbv/philidorvitrine/tree/main)
+👉 [`main` branch](https://github.com/AmelieDogan/philidorvitrine/tree/main)
